@@ -434,8 +434,8 @@
                 </div>
             </div>
 
-            <!-- Bottom 4 Pills (Matching Mockup) -->
-            <div class="grid grid-cols-4 gap-2 mt-3 pt-3 border-t border-slate-100">
+            <!-- Bottom 4 Pills (Matching Mockup & Responsive) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-3 border-t border-slate-100">
                 
                 <!-- Pill 1: Berkala -->
                 <a href="{{ url('download/informasi-berkala') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/60 hover:border-blue-200 transition text-center group text-decoration-none">
@@ -485,7 +485,7 @@
             </div>
             <div>
                 <div class="font-extrabold text-xs sm:text-sm text-slate-800 italic">
-                    “Bersama Mewujudkan Lampung Maju 2030”
+                    "Bersama Mewujudkan Lampung Maju 2030"
                 </div>
                 <div class="text-[11px] text-slate-500 font-semibold mt-0.5">
                     Bappeda Provinsi Lampung
