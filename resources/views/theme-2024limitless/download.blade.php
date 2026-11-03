@@ -30,16 +30,16 @@
         
         <!-- Document List Table / Cards (8 cols) -->
         <div class="lg:col-span-8 space-y-4">
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
                 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-600">
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs bappeda-doc-table">
                         <thead>
-                            <tr class="border-b border-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider bg-slate-50">
-                                <th class="py-3 px-3">No.</th>
-                                <th class="py-3 px-3">Kategori</th>
-                                <th class="py-3 px-3">Judul Dokumen</th>
-                                <th class="py-3 px-3 text-center">Aksi</th>
+                            <tr style="background-color: #F8FAFC !important; border-bottom: 2px solid #E2E8F0 !important;">
+                                <th class="py-3.5 px-4 text-center w-12 font-extrabold text-[11px] uppercase tracking-wider" style="color: #0B2545 !important;">No.</th>
+                                <th class="py-3.5 px-4 w-36 font-extrabold text-[11px] uppercase tracking-wider" style="color: #0B2545 !important;">Kategori</th>
+                                <th class="py-3.5 px-4 font-extrabold text-[11px] uppercase tracking-wider" style="color: #0B2545 !important;">Judul Dokumen</th>
+                                <th class="py-3.5 px-4 text-center w-28 font-extrabold text-[11px] uppercase tracking-wider" style="color: #0B2545 !important;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -48,35 +48,69 @@
                                 @php
                                     $linkdownload = berkas($download->file) ?: (file_exists(public_path('uploads/'.$download->file)) ? asset('uploads/'.$download->file) : '#');
                                     $ext = strtolower(pathinfo($download->file, PATHINFO_EXTENSION)) ?: 'pdf';
-                                    $badgeColor = 'bg-red-50 text-red-600';
-                                    if(in_array($ext, ['doc', 'docx'])) $badgeColor = 'bg-blue-50 text-blue-700';
-                                    if(in_array($ext, ['xls', 'xlsx'])) $badgeColor = 'bg-emerald-50 text-emerald-700';
+                                    
+                                    $catTitle = $download->dctitle ?: 'Dokumen';
+                                    $badgeBg = '#EFF6FF';
+                                    $badgeColor = '#1A56DB';
+                                    $badgeBorder = '#BFDBFE';
+                                    
+                                    if (stripos($catTitle, 'anggaran') !== false) {
+                                        $badgeBg = '#EFF6FF';
+                                        $badgeColor = '#1A56DB';
+                                        $badgeBorder = '#BFDBFE';
+                                    } elseif (stripos($catTitle, 'rpjmd') !== false || stripos($catTitle, 'rkpd') !== false) {
+                                        $badgeBg = '#ECFDF5';
+                                        $badgeColor = '#059669';
+                                        $badgeBorder = '#A7F3D0';
+                                    } elseif (stripos($catTitle, 'renstra') !== false || stripos($catTitle, 'renja') !== false) {
+                                        $badgeBg = '#FFFBEB';
+                                        $badgeColor = '#D97706';
+                                        $badgeBorder = '#FDE68A';
+                                    }
                                 @endphp
-                                <tr class="hover:bg-blue-50/40 transition">
-                                    <td class="py-3 px-3 font-semibold text-slate-400">{{ $no++ }}</td>
-                                    <td class="py-3 px-3">
-                                        <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
-                                            {{ $download->dctitle ?: 'Dokumen' }}
+                                <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                                    <td class="py-3.5 px-4 text-center font-bold text-xs" style="color: #64748B !important;">{{ $no++ }}</td>
+                                    <td class="py-3.5 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider"
+                                              style="background-color: {{ $badgeBg }} !important; color: {{ $badgeColor }} !important; border: 1px solid {{ $badgeBorder }} !important;">
+                                            {{ $catTitle }}
                                         </span>
                                     </td>
-                                    <td class="py-3 px-3">
-                                        <a href="{{ $linkdownload }}" target="_blank" class="font-semibold text-slate-800 hover:text-blue-700 leading-snug block transition text-decoration-none">
+                                    <td class="py-3.5 px-4">
+                                        <a href="{{ $linkdownload }}" target="_blank" 
+                                           class="font-bold text-xs sm:text-sm leading-snug block transition text-decoration-none hover:text-blue-600 mb-1"
+                                           style="color: #0B2545 !important;">
                                             {{ $download->title }}
                                         </a>
-                                        @if($download->content)
-                                            <div class="text-[11px] text-slate-400 mt-0.5 line-clamp-1">{!! strip_tags($download->content) !!}</div>
-                                        @endif
+                                        <div class="flex flex-wrap items-center gap-2 text-[11px]" style="color: #64748B !important;">
+                                            @if($ext)
+                                                <span class="uppercase font-bold text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                                                    {{ $ext }}
+                                                </span>
+                                            @endif
+                                            @if($download->created_at)
+                                                <span>&bull; {{ date('d M Y', strtotime($download->created_at)) }}</span>
+                                            @endif
+                                            @if($download->content)
+                                                <span class="line-clamp-1 italic text-slate-500">&mdash; {{ strip_tags($download->content) }}</span>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td class="py-3 px-3 text-center">
+                                    <td class="py-3.5 px-4 text-center">
                                         <a href="{{ $linkdownload }}" target="_blank" 
-                                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] shadow-sm transition text-decoration-none">
-                                            <i class="fas fa-download"></i> Unduh
+                                           class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-white font-bold text-xs shadow-sm hover:shadow transition transform hover:-translate-y-0.5 text-decoration-none"
+                                           style="background-color: #1A56DB !important; color: #FFFFFF !important;">
+                                            <i class="fas fa-download text-[11px]" style="color: #FFFFFF !important;"></i>
+                                            <span>Unduh</span>
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-8 text-center text-slate-400">Tidak ada dokumen yang ditemukan.</td>
+                                    <td colspan="4" class="py-12 text-center text-slate-400 text-xs">
+                                        <i class="far fa-folder-open text-3xl mb-2 block text-slate-300"></i>
+                                        Tidak ada dokumen yang ditemukan pada kategori ini.
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

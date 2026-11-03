@@ -288,7 +288,8 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 mb-1">
                                         @if($sub->ctitle)
-                                            <span class="text-[9px] font-bold text-[#1A56DB] bg-blue-50 px-1.5 py-0.5 rounded max-w-[120px] truncate">
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded max-w-[120px] truncate"
+                                                  style="background-color: #EFF6FF !important; color: #1A56DB !important; border: 1px solid #BFDBFE !important;">
                                                 {{ $sub->ctitle }}
                                             </span>
                                         @endif

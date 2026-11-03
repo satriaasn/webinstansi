@@ -40,7 +40,8 @@
                              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
                     </div>
                     <div class="flex-1 min-w-0">
-                        <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded mb-2">
+                        <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded mb-2"
+                              style="background-color: #EFF6FF !important; color: #1A56DB !important; border: 1px solid #BFDBFE !important;">
                             {{ $article->ctitle ?: 'Berita' }}
                         </span>
                         <h2 class="text-base font-bold text-slate-800 group-hover:text-blue-700 leading-snug mb-2 transition">

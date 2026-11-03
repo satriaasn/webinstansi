@@ -33,9 +33,10 @@
             @forelse($agendas as $agenda)
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between group">
                     <div class="flex items-start gap-3.5 min-w-0">
-                        <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-700 flex flex-col items-center justify-center font-bold text-xs flex-shrink-0">
-                            <span class="text-base font-black leading-none">{{ date('d', strtotime($agenda->start)) }}</span>
-                            <span class="text-[9px] uppercase tracking-wider">{{ date('M', strtotime($agenda->start)) }}</span>
+                        <div class="w-14 h-14 rounded-xl flex flex-col items-center justify-center font-bold text-xs flex-shrink-0 shadow-sm"
+                             style="background-color: #EFF6FF !important; border: 1px solid #BFDBFE !important;">
+                            <span class="text-base font-black leading-none" style="color: #1A56DB !important;">{{ date('d', strtotime($agenda->start)) }}</span>
+                            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-1" style="color: #1A56DB !important;">{{ date('M', strtotime($agenda->start)) }}</span>
                         </div>
                         <div class="min-w-0">
                             <h2 class="text-sm sm:text-base font-bold text-slate-800 group-hover:text-blue-700 leading-snug mb-1 transition">
