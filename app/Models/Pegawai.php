@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Pegawai extends Model
+{
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'pegawais';
+
+    /**
+    * The database primary key value.
+    *
+    * @var string
+    */
+    protected $primaryKey = 'id';
+
+    /**
+     * Attributes that should be mass-assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['klasifikasi_pegawai', 'nip', 'nama_pegawai', 'jabatan', 'golongan', 'deskripsi', 'picture', 'active', 'created_by', 'updated_by'];
+
+	public function createdBy()
+	{
+		return $this->belongsTo('App\Models\User', 'created_by');
+	}
+
+	public function updatedBy()
+	{
+		return $this->belongsTo('App\Models\User', 'updated_by');
+	}
+}
