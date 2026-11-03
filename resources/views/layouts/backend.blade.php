@@ -27,6 +27,7 @@
     <link href="{{ callassetspath('backend/lib/sweetalert/sweetalert2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ callassetspath('backend/lib/summernote/summernote-bs4.min.css') }}">
     <link href="{{ callassetspath('backend/lib/fancybox/jquery.fancybox.css') }}" rel="stylesheet">
+    <link href="{{ callassetspath('backend/lib/nestable/jquery.nestable.css') }}" rel="stylesheet">
 
     <!-- Tailwind CSS CDN with Custom Theme Palette -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -511,6 +512,173 @@
             color: #64748B !important;
             margin: 0 !important;
         }
+
+        /* ==========================================================================
+           MODERN NESTABLE MENU MANAGER HIERARCHY STYLING (CLEAR TREE STRUCTURE)
+           ========================================================================== */
+        .dd {
+            position: relative;
+            display: block;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            list-style: none;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .dd-list {
+            display: block;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        /* Nested Submenu Indentation with Distinct Tree Line */
+        .dd-list .dd-list {
+            padding-left: 36px !important;
+            margin-top: 8px !important;
+            margin-bottom: 8px !important;
+            border-left: 2px dashed #93C5FD !important; /* Soft blue dashed guide line */
+            margin-left: 18px !important;
+        }
+        @media (max-width: 640px) {
+            .dd-list .dd-list {
+                padding-left: 18px !important;
+                margin-left: 10px !important;
+            }
+        }
+        .dd-item,
+        .dd-empty,
+        .dd-placeholder {
+            display: block;
+            position: relative;
+            margin: 8px 0;
+            padding: 0;
+            min-height: 48px;
+            font-size: 13px;
+        }
+        /* Drag Placeholder */
+        .dd-placeholder,
+        .dd-empty {
+            margin: 8px 0 !important;
+            padding: 0 !important;
+            min-height: 48px !important;
+            background: #EFF6FF !important;
+            border: 2px dashed #3B82F6 !important;
+            border-radius: 14px !important;
+            box-sizing: border-box !important;
+        }
+        /* Collapse / Expand Buttons */
+        .dd-item > button {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: absolute !important;
+            left: 48px !important;
+            top: 12px !important;
+            cursor: pointer !important;
+            width: 24px !important;
+            height: 24px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #EFF6FF !important;
+            color: #1A56DB !important;
+            border: 1px solid #BFDBFE !important;
+            border-radius: 8px !important;
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            line-height: 1 !important;
+            z-index: 10 !important;
+            transition: all 0.15s ease !important;
+        }
+        .dd-item > button:hover {
+            background: #1A56DB !important;
+            color: #FFFFFF !important;
+        }
+        .dd-item > button[data-action="collapse"]:before {
+            content: '−' !important;
+            display: block !important;
+        }
+        .dd-item > button[data-action="expand"]:before {
+            content: '+' !important;
+            display: block !important;
+        }
+
+        /* Modern Menu Item Card (.dd3-content) */
+        .dd3-content {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            min-height: 50px !important;
+            margin: 6px 0 !important;
+            padding: 8px 14px 8px 50px !important;
+            background: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 14px !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03) !important;
+            transition: all 0.15s ease-in-out !important;
+            position: relative !important;
+            box-sizing: border-box !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+        .dd-item.has-children > .dd3-content {
+            padding-left: 80px !important;
+        }
+        .dd3-content:hover {
+            border-color: #BFDBFE !important;
+            box-shadow: 0 4px 10px -2px rgba(26, 86, 219, 0.08) !important;
+            background: #F8FAFC !important;
+        }
+
+        /* Modern Drag Grip Handle (.dd3-handle) */
+        .dd3-handle {
+            position: absolute !important;
+            margin: 0 !important;
+            left: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            cursor: grab !important;
+            width: 42px !important;
+            background: #F8FAFC !important;
+            border-right: 1px solid #E2E8F0 !important;
+            border-top-left-radius: 14px !important;
+            border-bottom-left-radius: 14px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #94A3B8 !important;
+            transition: all 0.15s ease !important;
+        }
+        .dd3-handle:hover {
+            background: #EFF6FF !important;
+            color: #1A56DB !important;
+        }
+        .dd3-handle:before {
+            content: "\f58e" !important;
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+        }
+
+        /* Pull-right buttons wrapper */
+        .pull-right {
+            float: right !important;
+            margin-left: auto !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            flex-shrink: 0 !important;
+        }
+        .btn-xss {
+            padding: 5px 9px !important;
+            font-size: 11px !important;
+            border-radius: 8px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+            line-height: 1 !important;
+        }
     </style>
 
     @stack('styles')
@@ -900,6 +1068,7 @@
     <script src="{{ callassetspath('backend/lib/datatables-responsive/dataTables.responsive.js') }}"></script>
     <script src="{{ callassetspath('backend/lib/sweetalert/sweetalert2.min.js') }}"></script>
     <script src="{{ callassetspath('backend/lib/fancybox/jquery.fancybox.js') }}"></script>
+    <script src="{{ callassetspath('backend/lib/nestable/jquery.nestable.js') }}"></script>
     <script src="{{ callassetspath('backend/js/deleter.js') }}"></script>
 
     <!-- Custom Interactive UI Logic -->
@@ -943,7 +1112,7 @@
                 }
             });
 
-            // Modal Handlers (Handles both Bootstrap and direct clicks)
+            // Modal Handlers (Handles all modals reliably)
             var targetDeleteForm = null;
 
             $(document).on('click', '[data-target="#alertalldel"], [data-toggle="modal"][data-target="#alertalldel"]', function (e) {
@@ -952,17 +1121,26 @@
                 $('#alertalldel').fadeIn(150).css('display', 'flex');
             });
 
+            $(document).on('click', '[data-toggle="modal"]', function (e) {
+                var target = $(this).data('target');
+                if (target && target !== '#alertalldel') {
+                    e.preventDefault();
+                    $(target).fadeIn(150).css('display', 'flex');
+                }
+            });
+
             window.closeDeleteModal = function () {
                 $('#alertalldel').fadeOut(150);
             };
 
-            $(document).on('click', '[data-dismiss="modal"]', function () {
-                closeDeleteModal();
+            $(document).on('click', '[data-dismiss="modal"], .modal .close', function (e) {
+                e.preventDefault();
+                $(this).closest('.modal').fadeOut(150);
             });
 
-            $('#alertalldel').on('click', function (e) {
-                if ($(e.target).is('#alertalldel')) {
-                    closeDeleteModal();
+            $(document).on('click', '.modal', function (e) {
+                if ($(e.target).hasClass('modal')) {
+                    $(this).fadeOut(150);
                 }
             });
 
