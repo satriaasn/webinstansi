@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="{{ callassetspath('backend/lib/summernote/summernote-bs4.min.css') }}">
     <link href="{{ callassetspath('backend/lib/fancybox/jquery.fancybox.css') }}" rel="stylesheet">
     <link href="{{ callassetspath('backend/lib/nestable/jquery.nestable.css') }}" rel="stylesheet">
+    <link href="{{ callassetspath('backend/lib/bootstrap-tagsinput/bootstrap-tagsinput.css') }}" rel="stylesheet">
+    <link href="{{ callassetspath('backend/lib/bootstrap-datetimepicker/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
 
     <!-- Tailwind CSS CDN with Custom Theme Palette -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -679,6 +681,334 @@
             text-decoration: none !important;
             line-height: 1 !important;
         }
+
+        /* ==========================================================================
+           FORM GRIDS & PROPORTIONAL INPUT CONTROLS (COMPLETE BULLETPROOF SYSTEM)
+           ========================================================================== */
+
+        /* 1. Grid Rows & Vertical Spacing */
+        .row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            margin-right: -10px !important;
+            margin-left: -10px !important;
+            box-sizing: border-box !important;
+        }
+        .form-group {
+            margin-bottom: 1.25rem !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* 2. Responsive Column Grid Widths */
+        [class*="col-"] {
+            position: relative !important;
+            width: 100% !important;
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+            box-sizing: border-box !important;
+        }
+        .col-md-12, .col-sm-12, .col-12 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+        .col-md-6, .col-sm-6, .col-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+        .col-md-4, .col-sm-4, .col-4 {
+            flex: 0 0 33.333333% !important;
+            max-width: 33.333333% !important;
+        }
+        .col-md-3, .col-sm-3, .col-3 {
+            flex: 0 0 25% !important;
+            max-width: 25% !important;
+        }
+        .col-md-8, .col-sm-8, .col-8 {
+            flex: 0 0 66.666667% !important;
+            max-width: 66.666667% !important;
+        }
+        .col-md-9, .col-sm-9, .col-9 {
+            flex: 0 0 75% !important;
+            max-width: 75% !important;
+        }
+        @media (max-width: 768px) {
+            .col-md-6, .col-md-4, .col-md-3, .col-md-8, .col-md-9 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        /* 3. Form Labels with Required Indicator */
+        .control-label, label {
+            display: inline-block !important;
+            font-size: 0.8125rem !important;
+            font-weight: 700 !important;
+            color: #1E293B !important;
+            margin-bottom: 0.5rem !important;
+            font-family: 'Poppins', sans-serif !important;
+            line-height: 1.3 !important;
+        }
+        .required:after, label.required:after {
+            content: " *" !important;
+            color: #EF4444 !important;
+            font-weight: 800 !important;
+        }
+
+        /* 4. Inputs, Selects, Textareas */
+        .form-control,
+        input[type="text"].form-control,
+        input[type="email"].form-control,
+        input[type="password"].form-control,
+        input[type="number"].form-control,
+        select.form-control,
+        textarea.form-control {
+            display: block !important;
+            width: 100% !important;
+            min-height: 44px !important;
+            padding: 0.625rem 1rem !important;
+            font-size: 0.8125rem !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+            color: #1E293B !important;
+            background-color: #FFFFFF !important;
+            background-clip: padding-box !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+            font-family: 'Poppins', sans-serif !important;
+            box-sizing: border-box !important;
+        }
+        .form-control:focus {
+            color: #0F172A !important;
+            background-color: #FFFFFF !important;
+            border-color: #1A56DB !important;
+            outline: 0 !important;
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15) !important;
+        }
+        textarea.form-control {
+            min-height: 100px !important;
+            line-height: 1.6 !important;
+        }
+
+        /* 5. Input Groups (e.g. Datetimepicker Calendar addon) */
+        .input-group {
+            position: relative !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .input-group > .form-control {
+            position: relative !important;
+            flex: 1 1 auto !important;
+            width: 1% !important;
+            min-width: 0 !important;
+            margin-bottom: 0 !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+        .input-group-addon, .input-group-text, .input-group-append {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.5rem 1rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            color: #64748B !important;
+            background-color: #F8FAFC !important;
+            border: 1px solid #CBD5E1 !important;
+            border-left: 0 !important;
+            border-top-right-radius: 0.75rem !important;
+            border-bottom-right-radius: 0.75rem !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+        .input-group-addon:hover, .input-group-text:hover {
+            background-color: #EFF6FF !important;
+            color: #1A56DB !important;
+        }
+
+        /* 6. Modern File Input */
+        input[type="file"] {
+            display: block !important;
+            width: 100% !important;
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.75rem !important;
+            color: #64748B !important;
+            background-color: #F8FAFC !important;
+            border: 1px dashed #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            box-sizing: border-box !important;
+        }
+        input[type="file"]:hover {
+            border-color: #1A56DB !important;
+            background-color: #EFF6FF !important;
+        }
+        input[type="file"]::file-selector-button {
+            margin-right: 0.75rem !important;
+            padding: 0.35rem 0.75rem !important;
+            border-radius: 0.5rem !important;
+            border: none !important;
+            background-color: #1A56DB !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            font-size: 0.75rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.15s ease !important;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #1E40AF !important;
+        }
+
+        /* 7. Select2 Inputs & Dropdowns */
+        .select2-container {
+            width: 100% !important;
+            display: block !important;
+            box-sizing: border-box !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 44px !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            background-color: #FFFFFF !important;
+            padding: 0.5rem 0.875rem !important;
+            display: flex !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        }
+        .select2-container--open .select2-selection--single {
+            border-color: #1A56DB !important;
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15) !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #1E293B !important;
+            font-size: 0.8125rem !important;
+            font-weight: 500 !important;
+            line-height: normal !important;
+            padding-left: 0 !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 42px !important;
+            right: 10px !important;
+        }
+        .select2-dropdown {
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+            overflow: hidden !important;
+            z-index: 99999 !important;
+        }
+        .select2-results__option {
+            padding: 8px 14px !important;
+            font-size: 0.8125rem !important;
+        }
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #1A56DB !important;
+            color: #FFFFFF !important;
+        }
+
+        /* 8. Summernote Modern Styling */
+        .note-editor.note-frame {
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            overflow: hidden !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+        }
+        .note-editor.note-frame .note-toolbar {
+            background-color: #F8FAFC !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            padding: 8px !important;
+        }
+        .note-editor .note-btn {
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 6px !important;
+            padding: 5px 9px !important;
+            font-size: 11px !important;
+            color: #475569 !important;
+            margin: 1px !important;
+            cursor: pointer !important;
+        }
+        .note-editor .note-btn:hover {
+            background-color: #EFF6FF !important;
+            color: #1A56DB !important;
+            border-color: #BFDBFE !important;
+        }
+        .note-editor.note-frame .note-statusbar {
+            background-color: #F8FAFC !important;
+            border-top: 1px solid #E2E8F0 !important;
+        }
+        .note-editor.note-frame .note-editing-area .note-editable {
+            padding: 16px !important;
+            font-size: 13px !important;
+            font-family: 'Poppins', sans-serif !important;
+            color: #1E293B !important;
+            min-height: 220px !important;
+        }
+
+        /* 9. Tagsinput */
+        .bootstrap-tagsinput {
+            background-color: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 0.75rem !important;
+            padding: 6px 10px !important;
+            width: 100% !important;
+            display: block !important;
+            min-height: 44px !important;
+            box-sizing: border-box !important;
+        }
+        .bootstrap-tagsinput .tag {
+            background-color: #1A56DB !important;
+            color: #FFFFFF !important;
+            border-radius: 6px !important;
+            padding: 3px 8px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            margin-right: 4px !important;
+        }
+
+        /* 10. Help Blocks, Errors & Form Divider */
+        .help-block, .text-danger, .help-block.text-danger {
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            color: #EF4444 !important;
+            margin-top: 0.35rem !important;
+            margin-bottom: 0 !important;
+        }
+        .has-error .form-control {
+            border-color: #EF4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+        .alert {
+            position: relative !important;
+            padding: 0.875rem 1.25rem !important;
+            margin-bottom: 1.25rem !important;
+            border: 1px solid transparent !important;
+            border-radius: 0.875rem !important;
+            font-size: 0.8125rem !important;
+            font-weight: 500 !important;
+        }
+        .alert-danger {
+            color: #991B1B !important;
+            background-color: #FEF2F2 !important;
+            border-color: #FECACA !important;
+        }
+        .alert-success {
+            color: #065F46 !important;
+            background-color: #ECFDF5 !important;
+            border-color: #A7F3D0 !important;
+        }
+        hr {
+            border: 0 !important;
+            border-top: 1px solid #E2E8F0 !important;
+            margin: 1.5rem 0 !important;
+        }
     </style>
 
     @stack('styles')
@@ -1069,6 +1399,9 @@
     <script src="{{ callassetspath('backend/lib/sweetalert/sweetalert2.min.js') }}"></script>
     <script src="{{ callassetspath('backend/lib/fancybox/jquery.fancybox.js') }}"></script>
     <script src="{{ callassetspath('backend/lib/nestable/jquery.nestable.js') }}"></script>
+    <script src="{{ callassetspath('backend/lib/moment/moment.min.js') }}"></script>
+    <script src="{{ callassetspath('backend/lib/bootstrap-datetimepicker/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ callassetspath('backend/lib/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
     <script src="{{ callassetspath('backend/js/deleter.js') }}"></script>
 
     <!-- Custom Interactive UI Logic -->
