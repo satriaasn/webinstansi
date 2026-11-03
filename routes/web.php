@@ -44,6 +44,14 @@ Route::middleware(['log.visitor'])->group(function () {
     Route::get('informasi-sosial/cek-status', 'InformasiSosialController@cekStatus')->name('informasi-sosial.cek-status');
     // ─────────────────────────────────────────────────────────────────
 
+    // ─── Permohonan Informasi Publik (PPID) ─────────────────────────
+    Route::get('permohonan-informasi', [\App\Http\Controllers\PermohonanInformasiController::class, 'index'])->name('permohonan-informasi.index');
+    Route::get('permohonan-informasi/tracking', [\App\Http\Controllers\PermohonanInformasiController::class, 'tracking'])->name('permohonan-informasi.tracking');
+    Route::post('permohonan-informasi/submit', [\App\Http\Controllers\PermohonanInformasiController::class, 'submit'])->name('permohonan-informasi.submit');
+    Route::get('permohonan-informasi/sukses/{tiket}', [\App\Http\Controllers\PermohonanInformasiController::class, 'sukses'])->name('permohonan-informasi.sukses');
+    Route::get('permohonan-informasi/jawaban/{tiket}', [\App\Http\Controllers\PermohonanInformasiController::class, 'downloadJawaban'])->name('permohonan-informasi.download-jawaban');
+    // ─────────────────────────────────────────────────────────────────
+
     // ─── Legacy URLs Redirects (from previous CMS version) ───────────
     Route::get('hal-informasi-pelayanan-publik.html', function () {
         return redirect('pages/informasi-pelayanan-publik', 301);
@@ -273,6 +281,16 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard/post-transport/table','Backend\\PostTransportController@getIndex');
 	Route::get('dashboard/post-transport/data','Backend\\PostTransportController@anyData');
 	Route::resource('dashboard/post-transport', 'Backend\PostTransportController');
+
+    // Permohonan Informasi (PPID) Backend
+    Route::get('dashboard/permohonan-informasi/index', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'index']);
+    Route::get('dashboard/permohonan-informasi/table', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'index'])->name('dashboard.permohonan-informasi.index');
+    Route::get('dashboard/permohonan-informasi/data', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'anyData'])->name('dashboard.permohonan-informasi.anydata');
+    Route::get('dashboard/permohonan-informasi/{id}', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'show'])->name('dashboard.permohonan-informasi.show');
+    Route::post('dashboard/permohonan-informasi/{id}/update-status', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'updateStatus'])->name('dashboard.permohonan-informasi.update-status');
+    Route::get('dashboard/permohonan-informasi/{id}/send-email', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'sendEmail'])->name('dashboard.permohonan-informasi.send-email');
+    Route::delete('dashboard/permohonan-informasi/{id}', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'destroy'])->name('dashboard.permohonan-informasi.destroy');
+    Route::post('dashboard/permohonan-informasi/deleteall', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'deleteAll'])->name('dashboard.permohonan-informasi.delete-all');
 
     Route::middleware('dishub.access')->group(function () {
         Route::get('dashboard/dishub/{module}/index', 'Backend\\DishubDataController@index');

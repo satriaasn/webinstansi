@@ -197,6 +197,22 @@
             </a>
         </li>
         <li class="br-menu-item">
+            <a href="#" class="br-menu-link with-sub {{ activeMenu('dashboard/permohonan-informasi') }}">
+                <i class="menu-item-icon icon ion-ios-paper-outline tx-20"></i>
+                <span class="menu-item-label">Layanan PPID</span>
+                @php
+                    $pendingPermohonanCount = \App\Models\PermohonanInformasi::where('status', 'pending')->count();
+                @endphp
+                @if($pendingPermohonanCount > 0)
+                    <span class="badge badge-warning text-dark font-weight-bold ml-auto px-2 py-0.5 rounded-pill">{{ $pendingPermohonanCount }}</span>
+                @endif
+            </a>
+            <ul class="br-menu-sub">
+                <li class="sub-item"><a href="{{ url('/dashboard/permohonan-informasi/table') }}"
+                                        class="sub-link {{ activeMenu('dashboard/permohonan-informasi/table') }}">Permohonan Informasi</a></li>
+            </ul>
+        </li>
+        <li class="br-menu-item">
             <a href="#" class="br-menu-link with-sub {{ activeMenu('dashboard/menu') }}">
                 <i class="menu-item-icon icon ion-grid tx-20"></i>
                 <span class="menu-item-label">Menu</span>

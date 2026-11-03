@@ -162,7 +162,7 @@
             </a>
 
             <!-- 4. Layanan PPID (Sky) -->
-            <a href="#ppid-section" class="p-3 rounded-xl hover:bg-slate-50 transition flex flex-col items-center text-center group text-decoration-none">
+            <a href="{{ url('permohonan-informasi') }}" class="p-3 rounded-xl hover:bg-slate-50 transition flex flex-col items-center text-center group text-decoration-none">
                 <div class="quick-access-box quick-access-box-sky w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-2 transition duration-200 shadow-sm" style="background-color: #F0F9FF !important; border: 1px solid #BAE6FD !important;">
                     <i class="fas fa-users-viewfinder text-xl" style="color: #0284C7 !important;"></i>
                 </div>
@@ -521,10 +521,16 @@
                     <p class="text-blue-100/90 text-xs leading-relaxed mb-6 max-w-sm">
                         Keterbukaan Informasi Publik adalah komitmen kami untuk mewujudkan pemerintahan yang transparan dan akuntabel.
                     </p>
-                    <a href="{{ url('pages/layanan-permohonan-informasi-bappeda-provinsi-lampung') }}" class="px-5 py-2.5 rounded-full bg-[#F59E0B] hover:bg-amber-500 text-slate-950 font-black text-xs inline-flex items-center gap-2 shadow transition text-decoration-none">
-                        <span>Akses Layanan PPID</span>
-                        <i class="fas fa-arrow-right text-[10px]"></i>
-                    </a>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <a href="{{ url('permohonan-informasi') }}" class="px-5 py-2.5 rounded-full bg-[#F59E0B] hover:bg-amber-500 text-slate-950 font-black text-xs inline-flex items-center gap-2 shadow transition text-decoration-none">
+                            <span>Permohonan Informasi Online</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                        <a href="{{ url('permohonan-informasi/tracking') }}" class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs inline-flex items-center gap-1.5 border border-white/20 transition text-decoration-none">
+                            <i class="fas fa-search text-[10px]"></i>
+                            <span>Lacak Status</span>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Right 5 White Cards -->
