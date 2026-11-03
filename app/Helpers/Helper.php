@@ -155,59 +155,61 @@ if (!function_exists('berkas_asset')) {
 if (!function_exists('berkas')) {
     function berkas($fileName)
     {
-
         if (empty($fileName)) {
             return null;
         }
-        $fileimage = Storage::disk('public')->path($fileName);
-        if (file_exists($fileimage)) {
-            return url('berkas/' . $fileName);
+
+        if (\Illuminate\Support\Str::startsWith($fileName, ['http://', 'https://'])) {
+            return $fileName;
         }
 
-        $uploads = 'uploads/' . $fileName;
-        $fileuploads = Storage::disk('public')->path($uploads);
-        if (file_exists($fileuploads)) {
-            return url('berkas/' . $uploads);
-        }
+        $clean = ltrim($fileName, '/');
 
-        //asset('uploads/medium/medium_'.$latestPost->picture)
-        $thumbs = 'uploads/thumbs/' . $fileName;
-        $filethumbs = Storage::disk('public')->path($thumbs);
-        if (file_exists($filethumbs)) {
-            return url('berkas/' . $thumbs);
-        }
-        $medium = 'uploads/medium/medium_' . $fileName;
-        $filemedium = Storage::disk('public')->path($medium);
-        if (file_exists($filemedium)) {
-            return url('berkas/' . $medium);
-        }
+        $candidates = [
+            $clean,
+            'uploads/' . $clean,
+            'public/uploads/' . $clean,
+            'uploads/thumbs/' . $clean,
+            'uploads/medium/medium_' . $clean,
+        ];
 
+        foreach ($candidates as $rel) {
+            if (Storage::disk('public')->exists($rel)) {
+                return url('berkas/' . $rel);
+            }
+            if (file_exists(public_path('berkas/' . $rel))) {
+                return url('berkas/' . $rel);
+            }
+        }
 
         return null;
-
     }
 }
 if (!function_exists('berkasLogo')) {
     function berkasLogo($fileName)
     {
-
         if (empty($fileName)) {
             return null;
         }
 
+        $clean = ltrim($fileName, '/');
 
-        $fileimage = public_path('storage/' . $fileName);
-        if (file_exists($fileimage)) {
-            return $fileimage;
-        }
+        $candidates = [
+            public_path('storage/' . $clean),
+            public_path('storage/uploads/' . $clean),
+            Storage::disk('public')->path($clean),
+            Storage::disk('public')->path('uploads/' . $clean),
+            Storage::disk('public')->path('public/uploads/' . $clean),
+            public_path('berkas/' . $clean),
+        ];
 
-        $fileimage = public_path('storage/uploads/' . $fileName);
-        if (file_exists($fileimage)) {
-            return $fileimage;
+        foreach ($candidates as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
         }
 
         return null;
-
     }
 }
 

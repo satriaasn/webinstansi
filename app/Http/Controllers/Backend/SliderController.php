@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 use App\Models\Slider;
@@ -123,12 +125,15 @@ class SliderController extends Controller
             if ($request->hasFile('picture')) {
                 $image = $request->file('picture');
                 $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
+                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                }
                 $requestData['picture'] = $hashImage;
             }
 
-
             Slider::create($requestData);
+            Cache::forget('home_sliders');
 
             Session::flash('flash_message', 'Slider added!');
 
@@ -203,12 +208,16 @@ class SliderController extends Controller
             if ($request->hasFile('picture')) {
                 $image = $request->file('picture');
                 $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
+                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                }
                 $requestData['picture'] = $hashImage;
             }
 
             $slider = Slider::findOrFail($ids[0]);
             $slider->update($requestData);
+            Cache::forget('home_sliders');
 
             Session::flash('flash_message', 'Slider updated!');
 
@@ -230,6 +239,7 @@ class SliderController extends Controller
         if (Auth::user()->can('slider')) {
             $ids = Hashids::decode($id);
             Slider::destroy($ids[0]);
+            Cache::forget('home_sliders');
 
             Session::flash('flash_message', 'Slider deleted!');
 
@@ -255,6 +265,7 @@ class SliderController extends Controller
                     $idd = Hashids::decode($id);
                     Slider::destroy($idd[0]);
                 }
+                Cache::forget('home_sliders');
                 Session::flash('flash_message', 'Slider deleted!');
             } else {
                 Session::flash('flash_message', 'No data deleted!');

@@ -38,7 +38,26 @@ class FileController extends Controller
         }
 
         if (!Storage::disk('public')->exists($slashData)) {
-            abort(404);
+            $fallbacks = [
+                'uploads/' . $slashData,
+                'public/uploads/' . $slashData,
+                'public/' . $slashData,
+            ];
+            $found = false;
+            foreach ($fallbacks as $fb) {
+                if (Storage::disk('public')->exists($fb)) {
+                    $slashData = $fb;
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                if (file_exists(public_path('berkas/' . $slashData))) {
+                    return response()->file(public_path('berkas/' . $slashData));
+                }
+                abort(404);
+            }
         }
 
         $file = Storage::disk('public')->path($slashData);

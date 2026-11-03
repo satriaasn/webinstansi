@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
@@ -134,12 +136,16 @@ class SettingsController extends Controller
                 if ($request->hasFile('value')) {
                     $image = $request->file('value');
                     $hashImage = $image->hashName();
-                    $image->storeAs('public/uploads', $hashImage);
+                    Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                    if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                        @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                    }
                     $requestData['value'] = $hashImage;
                 }
             }
 
             Setting::create($requestData);
+            Cache::forget('global_app_settings');
 
             return redirect('dashboard/settings')->with('flash_message', 'Setting added!');
         } else {
@@ -233,7 +239,10 @@ class SettingsController extends Controller
                 if ($request->hasFile('value')) {
                     $image = $request->file('value');
                     $hashImage = $image->hashName();
-                    $image->storeAs('public/uploads', $hashImage);
+                    Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                    if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                        @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                    }
                     $requestData['value'] = $hashImage;
                 }
             }
@@ -241,6 +250,7 @@ class SettingsController extends Controller
 
             $setting = Setting::findOrFail($ids[0]);
             $setting->update($requestData);
+            Cache::forget('global_app_settings');
 
             return redirect('dashboard/settings')->with('flash_message', 'Setting updated!');
         } else {
@@ -260,6 +270,7 @@ class SettingsController extends Controller
         if (Auth::user()->can('settings')) {
             $ids = Hashids::decode($id);
             Setting::destroy($ids[0]);
+            Cache::forget('global_app_settings');
 
             return redirect('dashboard/settings')->with('flash_message', 'Setting deleted!');
         } else {
@@ -283,6 +294,7 @@ class SettingsController extends Controller
                     $idd = Hashids::decode($id);
                     Setting::destroy($idd[0]);
                 }
+                Cache::forget('global_app_settings');
                 return redirect('dashboard/settings')->with('flash_message', 'Setting deleted!');
             } else {
                 return redirect('dashboard/settings')->with('flash_message', 'Setting error deleted!');

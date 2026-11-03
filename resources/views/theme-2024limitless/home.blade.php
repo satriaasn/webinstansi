@@ -11,7 +11,7 @@
      1. HERO SLIDER BANNER SECTION (Matching Mockup & Database Sliders)
      ======================================================================== -->
 @php
-    $heroSlider = (isset($sliders) && $sliders->count() > 0) ? $sliders->first() : \App\Models\Slider::where('active', 'Y')->orderBy('id', 'desc')->first();
+    $heroSlider = \App\Models\Slider::where('active', 'Y')->orderBy('id', 'desc')->first() ?: ((isset($sliders) && $sliders->count() > 0) ? $sliders->first() : null);
     $sliderImg = ($heroSlider && $heroSlider->picture) 
         ? (berkas($heroSlider->picture) ?: url('berkas/' . $heroSlider->picture)) 
         : url('berkas/PoqFOYIvER46x4p7bSVwnCiLubDYnfFuZalqSPYt.png');
