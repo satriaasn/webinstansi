@@ -15,9 +15,12 @@ use App\Models\Agenda;
 use App\Models\Video;
 use App\Models\Menu;
 use App\Models\Contact;
+use App\Models\PermohonanInformasi;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Spatie\Analytics\Facades\Analytics;
 use Spatie\Analytics\Period;
 
@@ -39,8 +42,36 @@ class BackendController extends Controller
         $cvideos = Video::count();
         $ccontacts = Contact::count();
 
+        // Data terbaru untuk dashboard interaktif (Matching Mockup)
+        $latestPosts = Post::where('active', 'Y')->orderBy('id', 'desc')->take(3)->get();
+        $latestAgendas = Agenda::where('active', 'Y')->orderBy('id', 'desc')->take(3)->get();
+        $latestDownloads = Download::where('active', 'Y')->orderBy('id', 'desc')->take(4)->get();
+        $latestGallery = Gallery::where('active', 'Y')->orderBy('id', 'desc')->take(6)->get();
+        $totalGalleryCount = Gallery::where('active', 'Y')->count();
+        $totalVisitors = Visitor::count();
 
-        return view('backend.dashboard', compact('cposts', 'cpages', 'cagendas', 'cdownloads', 'cgallerys', 'calbums', 'cvideos', 'ccontacts'));
+        $ppidCounts = [
+            'total'    => PermohonanInformasi::count(),
+            'pending'  => PermohonanInformasi::where('status', 'pending')->count(),
+            'diproses' => PermohonanInformasi::where('status', 'diproses')->count(),
+            'selesai'  => PermohonanInformasi::where('status', 'selesai')->count(),
+        ];
+
+        // 30-hari grafik pengunjung
+        $visitorChart = Cache::remember('dashboard_visitor_chart', 3600, function () {
+            return DB::table('visitors')
+                ->select('date_time', DB::raw('count(*) as total'))
+                ->where('date_time', '>=', now()->subDays(30)->toDateString())
+                ->groupBy('date_time')
+                ->orderBy('date_time', 'asc')
+                ->get();
+        });
+
+        return view('backend.dashboard', compact(
+            'cposts', 'cpages', 'cagendas', 'cdownloads', 'cgallerys', 'calbums', 'cvideos', 'ccontacts',
+            'latestPosts', 'latestAgendas', 'latestDownloads', 'latestGallery', 'totalGalleryCount', 'totalVisitors',
+            'ppidCounts', 'visitorChart'
+        ));
     }
 
     public function getAnalyticsData(Request $request)

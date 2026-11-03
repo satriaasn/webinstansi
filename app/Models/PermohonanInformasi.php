@@ -91,3 +91,4 @@ class PermohonanInformasi extends Model
         };
     }
 }
+

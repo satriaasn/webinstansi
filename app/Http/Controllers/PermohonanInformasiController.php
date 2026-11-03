@@ -166,3 +166,4 @@ class PermohonanInformasiController extends Controller
         return response()->download($fullPath, 'Jawaban_PPID_' . $permohonan->nomor_tiket . '.' . pathinfo($fullPath, PATHINFO_EXTENSION));
     }
 }
+

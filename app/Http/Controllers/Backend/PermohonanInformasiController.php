@@ -302,3 +302,4 @@ class PermohonanInformasiController extends Controller
         return redirect('dashboard/permohonan-informasi/table');
     }
 }
+
