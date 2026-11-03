@@ -6,8 +6,8 @@
             <!-- Column 1: Brand Logo & Title (3 cols) -->
             <div class="lg:col-span-3">
                 <div class="flex items-center gap-3">
-                    <img src="{{ berkas(getSetting('logo')) ?: url('berkas/' . getSetting('logo')) }}" 
-                         alt="Logo Bappeda Lampung" 
+                    <img src="{{ berkas(getSetting('logo')) ?: asset('assets/images/logo_lampung.png') }}" 
+                         alt="{{ getSetting('web_name') }}" 
                          onerror="this.onerror=null;this.src='{{ asset('assets/images/logo_lampung.png') }}'"
                          class="h-12 w-auto drop-shadow">
                     <div>

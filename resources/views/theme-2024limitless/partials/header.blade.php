@@ -237,11 +237,11 @@ nav.bappeda-navbar-root ul.bappeda-nav-list li a:not(.bappeda-nav-home-btn):hove
 <nav class="bappeda-navbar-root bg-white shadow-sm border-b border-slate-100 sticky top-0 z-50 font-sans transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20 gap-4">
-            <!-- Brand Logo & Title with Tagline -->
+            <!-- Brand Logo & Title -->
             <div class="flex items-center gap-3 flex-shrink-0">
                 <a href="{{ url('') }}" class="flex items-center gap-2.5 group text-decoration-none flex-shrink-0" style="text-decoration: none !important;">
-                    <img src="{{ berkas(getSetting('logo')) ?: url('berkas/' . getSetting('logo')) }}" 
-                         alt="Logo Bappeda Lampung" 
+                    <img src="{{ berkas(getSetting('logo')) ?: asset('assets/images/logo_lampung.png') }}" 
+                         alt="{{ getSetting('web_name') }}" 
                          onerror="this.onerror=null;this.src='{{ asset('assets/images/logo_lampung.png') }}'"
                          class="h-11 w-auto drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
                     <div class="flex flex-col flex-shrink-0">
@@ -249,13 +249,6 @@ nav.bappeda-navbar-root ul.bappeda-nav-list li a:not(.bappeda-nav-home-btn):hove
                         <span class="bappeda-brand-region font-extrabold text-[10px] leading-tight tracking-wider uppercase">PROVINSI LAMPUNG</span>
                     </div>
                 </a>
-
-                <!-- Divider & Tagline -->
-                <div class="hidden 2xl:flex items-center pl-3 border-l border-slate-300 flex-shrink-0">
-                    <span class="bappeda-tagline-text text-xs font-semibold italic tracking-wide whitespace-nowrap">
-                        Perencanaan Berkualitas untuk Lampung Maju
-                    </span>
-                </div>
             </div>
 
             <!-- Desktop Menu Items -->
