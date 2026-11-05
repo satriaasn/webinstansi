@@ -182,6 +182,14 @@
                 },
                 height: 300,
             });
+
+            $('form').on('submit', function () {
+                if ($('#deskripsi').summernote('isEmpty')) {
+                    $('#deskripsi').val('');
+                } else {
+                    $('#deskripsi').val($('#deskripsi').summernote('code'));
+                }
+            });
         });
     </script>
 @endpush

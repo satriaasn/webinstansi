@@ -72,11 +72,11 @@ class PermohonanInformasi extends Model
     public function getStatusBadgeAttribute()
     {
         return match ($this->status) {
-            'pending' => '<span class="badge badge-warning text-dark font-weight-bold px-2 py-1"><i class="fa fa-clock-o mr-1"></i> Menunggu Verifikasi</span>',
-            'diproses' => '<span class="badge badge-info text-white font-weight-bold px-2 py-1"><i class="fa fa-cogs mr-1"></i> Sedang Diproses</span>',
-            'selesai' => '<span class="badge badge-success text-white font-weight-bold px-2 py-1"><i class="fa fa-check mr-1"></i> Diterima / Selesai</span>',
-            'ditolak' => '<span class="badge badge-danger text-white font-weight-bold px-2 py-1"><i class="fa fa-times mr-1"></i> Ditolak</span>',
-            default => '<span class="badge badge-secondary px-2 py-1">Menunggu</span>',
+            'pending' => '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300 shadow-2xs"><i class="fas fa-clock text-[10px] text-amber-600"></i> Menunggu Verifikasi</span>',
+            'diproses' => '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-sky-50 text-sky-800 border border-sky-300 shadow-2xs"><i class="fas fa-gears text-[10px] text-sky-600"></i> Sedang Diproses</span>',
+            'selesai' => '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs"><i class="fas fa-circle-check text-[10px] text-emerald-600"></i> Diterima / Selesai</span>',
+            'ditolak' => '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-300 shadow-2xs"><i class="fas fa-circle-xmark text-[10px] text-rose-600"></i> Ditolak</span>',
+            default => '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-300">Menunggu</span>',
         };
     }
 

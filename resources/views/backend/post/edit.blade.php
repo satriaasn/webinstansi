@@ -178,7 +178,15 @@
                         uploadImage(files[0]);
                     }
                 },
-                height: 300,
+                height: 350,
+            });
+
+            $('form').on('submit', function () {
+                if ($('#content').summernote('isEmpty')) {
+                    $('#content').val('');
+                } else {
+                    $('#content').val($('#content').summernote('code'));
+                }
             });
 
 

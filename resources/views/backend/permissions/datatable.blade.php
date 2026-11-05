@@ -1,39 +1,43 @@
 @extends('layouts.backend')
-@section('title', 'Permissions')
+@section('title', 'Hak Akses & Permissions')
 
 @section('content')
-    <div class="br-pageheader">
+    <div class="br-pageheader font-sans">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="{{ url('dashboard') }}">Dashboard</a>
+            <span class="breadcrumb-item">Pengguna</span>
             <span class="breadcrumb-item active">Permissions</span>
         </nav>
     </div>
 
-    <div class="br-pagetitle">
-        <i class="icon ion-ios-contact-outline"></i>
+    <!-- Header & Action Button -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 font-sans">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-blue-50 text-[#1A56DB] flex items-center justify-center text-xl shadow-xs flex-shrink-0">
+                <i class="fas fa-key"></i>
+            </div>
+            <div>
+                <h1 class="text-lg sm:text-xl font-black text-slate-800 m-0 leading-tight">Izin Akses (Permissions)</h1>
+                <p class="text-xs text-slate-500 m-0 mt-0.5">Kelola daftar hak akses permission granular untuk modul dan fitur sistem</p>
+            </div>
+        </div>
         <div>
-            <h4>Permissions</h4>
-            <p class="mg-b-0">List Permissions</p>
+            <a href="{{ url('dashboard/permissions/create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1A56DB] hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs text-decoration-none">
+                <i class="fas fa-plus text-xs"></i> Tambah Permission Baru
+            </a>
         </div>
     </div>
 
     <div class="br-pagebody">
-        <div class="br-section-wrapper">
-            <div class="mg-b-40">
-                <div class="card-options">
-                    <a href="{{ url('dashboard/permissions/create') }}" class="btn btn-success btn-sm"
-                       title="Add New Permission"><i class="fa fa-plus"></i> Add <span class="hidden-xs-down">New</span></a>
-                </div>
-            </div>
-
+        <div class="br-section-wrapper font-sans">
             {!! Form::open(['url' => 'dashboard/permissions/deleteall', 'method' => 'post', 'class' => 'form-horizontal']) !!}
             <input type="hidden" name="totaldata" id="totaldata" value="0"/>
             <div class="table-wrapper">
-                <table class="table display responsive nowrap" id="permissions-table">
+                <table class="table display responsive nowrap w-full" id="permissions-table">
                     <thead>
                     <tr>
                         <th style="text-align:center;" width="15"></th>
-                        <th style="text-align:center;" width="25">ID</th>
+                        <th style="text-align:center;" width="40">ID</th>
                         <th>Name</th>
                         <th>Label</th>
                         <th>Create By</th>
@@ -43,12 +47,12 @@
                     </thead>
                     <tfoot>
                     <tr>
-                        <td style="width:10px;" style="text-align:center;">
-                            <input type="checkbox" id="titleCheck" data-toggle="tooltip" title="Check All"/>
+                        <td style="width:10px; text-align:center;">
+                            <input type="checkbox" id="titleCheck" data-toggle="tooltip" title="Pilih Semua"/>
                         </td>
                         <td colspan="2">
-                            <button class="btn btn-sm btn-danger" type="button" data-toggle="modal"
-                                    data-target="#alertalldel"><i class="fa fa-trash-o"></i> Delete Selected
+                            <button class="btn btn-sm btn-danger inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold" type="button" data-toggle="modal"
+                                    data-target="#alertalldel"><i class="fas fa-trash-alt text-xs"></i> Hapus Terpilih
                             </button>
                         </td>
                         <td colspan="4"></td>

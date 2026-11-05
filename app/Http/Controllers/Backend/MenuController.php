@@ -140,23 +140,48 @@ class MenuController extends Controller
     public function menusort(Request $request)
     {
 		if(Auth::user()->can('menu')) {
-			$data = json_decode($request->input('data'));
-			$readbleArray = $this->parseJsonArray($data);
-			$i = 0;
-			foreach($readbleArray as $row){
-				$i++;
-				$request->request->add([
-					'parent_id' => $row['parentID'],
-					'position' => $i,
-					'updated_by' => Auth::User()->id
-				]);
-				$requestData = $request->all();
+			$raw = $request->input('data');
+			if (empty($raw)) {
+				return response()->json(['status' => 'error', 'message' => 'Data struktur menu kosong.'], 400);
+			}
+			$data = json_decode($raw);
+			if (!is_array($data)) {
+				return response()->json(['status' => 'error', 'message' => 'Format data struktur menu tidak valid.'], 400);
+			}
 
-				$menu = Menu::findOrFail($row['id']);
-				$menu->update($requestData);
+			$readbleArray = $this->parseJsonArray($data);
+			$userId = Auth::id();
+
+			\DB::beginTransaction();
+			try {
+				$i = 0;
+				foreach($readbleArray as $row){
+					if (!isset($row['id'])) continue;
+					$i++;
+					Menu::where('id', $row['id'])->update([
+						'parent_id' => $row['parentID'] ?? 0,
+						'position' => $i,
+						'updated_by' => $userId
+					]);
+				}
+				\DB::commit();
+
+				\Cache::forget('home_menu_tree');
+				\Cache::flush();
+
+				return response()->json([
+					'status' => 'success',
+					'message' => 'Susunan dan hierarki menu berhasil disimpan!'
+				]);
+			} catch (\Exception $e) {
+				\DB::rollBack();
+				return response()->json([
+					'status' => 'error',
+					'message' => 'Gagal memperbarui menu: ' . $e->getMessage()
+				], 500);
 			}
 		} else {
-			return redirect('dashboard');
+			return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
 		}
 	}
 

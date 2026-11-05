@@ -78,7 +78,7 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 99999 !important;
-            display: none;
+            display: none !important;
             overflow-x: hidden !important;
             overflow-y: auto !important;
             outline: 0 !important;
@@ -90,6 +90,15 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+        }
+        .modal-backdrop {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 99998 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: rgba(15, 23, 42, 0.65) !important;
         }
         .modal-dialog {
             position: relative !important;
@@ -613,34 +622,43 @@
             justify-content: space-between !important;
             min-height: 50px !important;
             margin: 6px 0 !important;
-            padding: 8px 14px 8px 50px !important;
+            padding: 8px 14px 8px 54px !important;
             background: #FFFFFF !important;
             border: 1px solid #E2E8F0 !important;
             border-radius: 14px !important;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03) !important;
-            transition: all 0.15s ease-in-out !important;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
             position: relative !important;
             box-sizing: border-box !important;
             font-family: 'Poppins', sans-serif !important;
+            cursor: grab !important;
         }
-        .dd-item.has-children > .dd3-content {
-            padding-left: 80px !important;
+        .dd-item.has-children > .dd3-content,
+        .dd-item > button ~ .dd3-content {
+            padding-left: 82px !important;
         }
         .dd3-content:hover {
             border-color: #BFDBFE !important;
             box-shadow: 0 4px 10px -2px rgba(26, 86, 219, 0.08) !important;
             background: #F8FAFC !important;
         }
+        .dd3-content .btn,
+        .dd3-content .btn-hierarchy,
+        .dd3-content a,
+        .dd3-content button {
+            cursor: pointer !important;
+        }
 
-        /* Modern Drag Grip Handle (.dd3-handle) */
+        /* Modern Drag Grip Handle (.dd3-handle) - elevated above content */
         .dd3-handle {
             position: absolute !important;
             margin: 0 !important;
             left: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
+            top: 6px !important;
+            bottom: 6px !important;
+            height: calc(100% - 12px) !important;
             cursor: grab !important;
-            width: 42px !important;
+            width: 44px !important;
             background: #F8FAFC !important;
             border-right: 1px solid #E2E8F0 !important;
             border-top-left-radius: 14px !important;
@@ -648,18 +666,76 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            color: #94A3B8 !important;
-            transition: all 0.15s ease !important;
+            color: #64748B !important;
+            z-index: 25 !important;
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            touch-action: none !important;
+            transition: background 0.15s ease, color 0.15s ease !important;
         }
         .dd3-handle:hover {
             background: #EFF6FF !important;
             color: #1A56DB !important;
+            cursor: grab !important;
         }
-        .dd3-handle:before {
+        .dd3-handle:active {
+            cursor: grabbing !important;
+            background: #DBEAFE !important;
+            color: #1A56DB !important;
+        }
+        .dd3-handle:empty:before {
             content: "\f58e" !important;
             font-family: "Font Awesome 6 Free" !important;
             font-weight: 900 !important;
-            font-size: 13px !important;
+            font-size: 14px !important;
+            pointer-events: none !important;
+        }
+
+        /* Dragging active state */
+        .dd-dragel {
+            position: absolute !important;
+            pointer-events: none !important;
+            z-index: 99999 !important;
+            opacity: 0.95 !important;
+            filter: drop-shadow(0 15px 25px rgba(26, 86, 219, 0.2)) !important;
+        }
+        .dd-dragel .dd3-content {
+            border-color: #3B82F6 !important;
+            background: #FFFFFF !important;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3) !important;
+        }
+        .dd-dragel .dd3-handle {
+            background: #1A56DB !important;
+            color: #FFFFFF !important;
+            cursor: grabbing !important;
+        }
+
+        /* Quick Hierarchy Action Buttons */
+        .btn-hierarchy {
+            width: 26px !important;
+            height: 26px !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 6px !important;
+            color: #475569 !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            margin: 0 1px !important;
+            line-height: 1 !important;
+        }
+        .btn-hierarchy:hover:not(:disabled) {
+            background: #EFF6FF !important;
+            color: #1A56DB !important;
+            border-color: #93C5FD !important;
+        }
+        .btn-hierarchy:disabled {
+            opacity: 0.3 !important;
+            cursor: not-allowed !important;
         }
 
         /* Pull-right buttons wrapper */
@@ -732,11 +808,57 @@
             flex: 0 0 75% !important;
             max-width: 75% !important;
         }
+        .col-md-7 {
+            flex: 0 0 58.333333% !important;
+            max-width: 58.333333% !important;
+        }
+        .col-md-5 {
+            flex: 0 0 41.666667% !important;
+            max-width: 41.666667% !important;
+        }
+
+        @media (min-width: 992px) {
+            .col-lg-12 { flex: 0 0 100% !important; max-width: 100% !important; }
+            .col-lg-11 { flex: 0 0 91.666667% !important; max-width: 91.666667% !important; }
+            .col-lg-10 { flex: 0 0 83.333333% !important; max-width: 83.333333% !important; }
+            .col-lg-9  { flex: 0 0 75% !important; max-width: 75% !important; }
+            .col-lg-8  { flex: 0 0 66.666667% !important; max-width: 66.666667% !important; }
+            .col-lg-7  { flex: 0 0 58.333333% !important; max-width: 58.333333% !important; }
+            .col-lg-6  { flex: 0 0 50% !important; max-width: 50% !important; }
+            .col-lg-5  { flex: 0 0 41.666667% !important; max-width: 41.666667% !important; }
+            .col-lg-4  { flex: 0 0 33.333333% !important; max-width: 33.333333% !important; }
+            .col-lg-3  { flex: 0 0 25% !important; max-width: 25% !important; }
+            .col-lg-2  { flex: 0 0 16.666667% !important; max-width: 16.666667% !important; }
+            .col-lg-1  { flex: 0 0 8.333333% !important; max-width: 8.333333% !important; }
+        }
+
         @media (max-width: 768px) {
-            .col-md-6, .col-md-4, .col-md-3, .col-md-8, .col-md-9 {
+            .col-md-6, .col-md-4, .col-md-3, .col-md-8, .col-md-9, .col-md-7, .col-md-5 {
                 flex: 0 0 100% !important;
                 max-width: 100% !important;
             }
+        }
+
+        /* Legacy Table & Layout Resets for Detail Views */
+        .table-bordered {
+            border: 1px solid #E2E8F0 !important;
+            width: 100% !important;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #E2E8F0 !important;
+            padding: 0.625rem 0.875rem !important;
+            vertical-align: middle !important;
+            font-size: 0.8125rem !important;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #F8FAFC !important;
+        }
+        .bg-light {
+            background-color: #F8FAFC !important;
+        }
+        .btn-block {
+            display: block !important;
+            width: 100% !important;
         }
 
         /* 3. Form Labels with Required Indicator */
@@ -913,17 +1035,20 @@
             color: #FFFFFF !important;
         }
 
-        /* 8. Summernote Modern Styling */
+        /* 8. Summernote Modern Styling & Dropdown Engine Reset */
         .note-editor.note-frame {
             border: 1px solid #CBD5E1 !important;
             border-radius: 0.75rem !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+            background-color: #FFFFFF !important;
         }
         .note-editor.note-frame .note-toolbar {
             background-color: #F8FAFC !important;
             border-bottom: 1px solid #E2E8F0 !important;
             padding: 8px !important;
+            border-top-left-radius: 0.75rem !important;
+            border-top-right-radius: 0.75rem !important;
         }
         .note-editor .note-btn {
             background-color: #FFFFFF !important;
@@ -943,6 +1068,8 @@
         .note-editor.note-frame .note-statusbar {
             background-color: #F8FAFC !important;
             border-top: 1px solid #E2E8F0 !important;
+            border-bottom-left-radius: 0.75rem !important;
+            border-bottom-right-radius: 0.75rem !important;
         }
         .note-editor.note-frame .note-editing-area .note-editable {
             padding: 16px !important;
@@ -950,6 +1077,148 @@
             font-family: 'Poppins', sans-serif !important;
             color: #1E293B !important;
             min-height: 220px !important;
+            background-color: #FFFFFF !important;
+        }
+
+        /* Summernote Dropdown Menus (Font, Heading, Color Picker, Table) */
+        .note-btn-group,
+        .btn-group {
+            position: relative !important;
+            display: inline-flex !important;
+        }
+        .dropdown-menu,
+        .note-dropdown-menu,
+        .note-editor .note-dropdown-menu,
+        .note-popover .note-dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            z-index: 1050 !important;
+            display: none !important;
+            float: left !important;
+            min-width: 10rem !important;
+            margin: 0.25rem 0 0 !important;
+            font-size: 0.8125rem !important;
+            color: #1E293B !important;
+            text-align: left !important;
+            list-style: none !important;
+            background-color: #FFFFFF !important;
+            background-clip: padding-box !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+            padding: 0.5rem !important;
+        }
+        .note-editor .note-btn-group.show > .note-dropdown-menu,
+        .note-editor .show > .dropdown-menu,
+        .note-editor .note-dropdown-menu.show,
+        .note-editor .dropdown-menu.show,
+        .note-btn-group.show > .note-dropdown-menu,
+        .note-btn-group.show > .dropdown-menu,
+        .btn-group.show > .dropdown-menu,
+        .show > .dropdown-menu,
+        .show > .note-dropdown-menu,
+        .dropdown-menu.show,
+        .note-dropdown-menu.show,
+        .open > .dropdown-menu,
+        .open > .note-dropdown-menu {
+            display: block !important;
+        }
+
+        #alertalldel.hidden {
+            display: none !important;
+        }
+        #alertalldel.flex,
+        #alertalldel.show {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Dropdown Items (Headings 1-6, Fonts Poppins, Arial, etc.) */
+        .dropdown-item,
+        .note-dropdown-menu > li > a,
+        .note-dropdown-menu > a,
+        .note-dropdown-item {
+            display: block !important;
+            width: 100% !important;
+            padding: 0.35rem 0.75rem !important;
+            clear: both !important;
+            font-weight: 500 !important;
+            color: #334155 !important;
+            text-align: inherit !important;
+            white-space: nowrap !important;
+            background-color: transparent !important;
+            border: 0 !important;
+            border-radius: 0.5rem !important;
+            text-decoration: none !important;
+            transition: background-color 0.15s ease, color 0.15s ease !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            font-size: 12px !important;
+        }
+        .dropdown-item:hover,
+        .dropdown-item:focus,
+        .note-dropdown-menu > li > a:hover,
+        .note-dropdown-menu > a:hover,
+        .note-dropdown-item:hover {
+            color: #1A56DB !important;
+            background-color: #EFF6FF !important;
+        }
+
+        /* Color Palette & Table Grid Picker */
+        .note-color .note-dropdown-menu {
+            min-width: 320px !important;
+            padding: 10px !important;
+        }
+        .note-color-palette {
+            display: inline-block !important;
+            line-height: 1 !important;
+            margin-bottom: 6px !important;
+        }
+        .note-color-row {
+            display: flex !important;
+        }
+        .note-color-btn {
+            width: 18px !important;
+            height: 18px !important;
+            padding: 0 !important;
+            margin: 1px !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border-radius: 3px !important;
+            cursor: pointer !important;
+            transition: transform 0.1s ease !important;
+        }
+        .note-color-btn:hover {
+            transform: scale(1.25) !important;
+            z-index: 10 !important;
+        }
+        .note-dimension-picker {
+            font-size: 16px !important;
+            position: relative !important;
+        }
+        .note-dimension-picker-mousecatcher {
+            position: absolute !important;
+            z-index: 3 !important;
+            width: 10em !important;
+            height: 10em !important;
+            cursor: pointer !important;
+        }
+        .note-dimension-picker-highlighted {
+            position: absolute !important;
+            z-index: 2 !important;
+            width: 1em !important;
+            height: 1em !important;
+            background: #BFDBFE !important;
+            border: 1px solid #3B82F6 !important;
+        }
+        .note-dimension-picker-unhighlighted {
+            position: absolute !important;
+            z-index: 1 !important;
+            width: 10em !important;
+            height: 10em !important;
+            background: #F1F5F9 !important;
+            border: 1px solid #CBD5E1 !important;
         }
 
         /* 9. Tagsinput */
@@ -1008,6 +1277,138 @@
             border: 0 !important;
             border-top: 1px solid #E2E8F0 !important;
             margin: 1.5rem 0 !important;
+        }
+
+        /* 11. Modern Badges & High-Contrast Status Pills (No Clashing Colors) */
+        .badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 4px !important;
+            padding: 4px 10px !important;
+            font-size: 0.6875rem !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            border-radius: 8px !important;
+            letter-spacing: 0.02em !important;
+        }
+        .badge-warning, .badge.badge-warning {
+            background-color: #FEF3C7 !important;
+            color: #92400E !important;
+            border: 1px solid #FCD34D !important;
+        }
+        .badge-info, .badge.badge-info {
+            background-color: #E0F2FE !important;
+            color: #0369A1 !important;
+            border: 1px solid #BAE6FD !important;
+        }
+        .badge-success, .badge.badge-success {
+            background-color: #ECFDF5 !important;
+            color: #047857 !important;
+            border: 1px solid #A7F3D0 !important;
+        }
+        .badge-danger, .badge.badge-danger {
+            background-color: #FEE2E2 !important;
+            color: #B91C1C !important;
+            border: 1px solid #FECACA !important;
+        }
+        .badge-primary, .badge.badge-primary {
+            background-color: #EFF6FF !important;
+            color: #1A56DB !important;
+            border: 1px solid #BFDBFE !important;
+        }
+        .badge-secondary, .badge.badge-secondary, .badge-light, .badge.badge-light {
+            background-color: #F1F5F9 !important;
+            color: #475569 !important;
+            border: 1px solid #CBD5E1 !important;
+        }
+
+        /* Outline Buttons */
+        .btn-outline-primary {
+            background-color: transparent !important;
+            color: #1A56DB !important;
+            border: 1px solid #BFDBFE !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary.active {
+            background-color: #1A56DB !important;
+            color: #FFFFFF !important;
+            border-color: #1A56DB !important;
+        }
+        .btn-outline-warning {
+            background-color: transparent !important;
+            color: #D97706 !important;
+            border: 1px solid #FDE68A !important;
+        }
+        .btn-outline-warning:hover, .btn-outline-warning.active {
+            background-color: #D97706 !important;
+            color: #FFFFFF !important;
+            border-color: #D97706 !important;
+        }
+        .btn-outline-info {
+            background-color: transparent !important;
+            color: #0284C7 !important;
+            border: 1px solid #BAE6FD !important;
+        }
+        .btn-outline-info:hover, .btn-outline-info.active {
+            background-color: #0284C7 !important;
+            color: #FFFFFF !important;
+            border-color: #0284C7 !important;
+        }
+        .btn-outline-success {
+            background-color: transparent !important;
+            color: #059669 !important;
+            border: 1px solid #A7F3D0 !important;
+        }
+        .btn-outline-success:hover, .btn-outline-success.active {
+            background-color: #059669 !important;
+            color: #FFFFFF !important;
+            border-color: #059669 !important;
+        }
+        .btn-outline-danger {
+            background-color: transparent !important;
+            color: #DC2626 !important;
+            border: 1px solid #FECACA !important;
+        }
+        .btn-outline-danger:hover, .btn-outline-danger.active {
+            background-color: #DC2626 !important;
+            color: #FFFFFF !important;
+            border-color: #DC2626 !important;
+        }
+        .btn-outline-secondary {
+            background-color: transparent !important;
+            color: #475569 !important;
+            border: 1px solid #CBD5E1 !important;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #F8FAFC !important;
+            color: #1E293B !important;
+            border-color: #94A3B8 !important;
+        }
+
+        /* Text Contrast Safety */
+        .text-dark { color: #1E293B !important; }
+        .text-muted { color: #64748B !important; }
+        .text-primary { color: #1A56DB !important; }
+        .text-success { color: #059669 !important; }
+        .text-warning { color: #D97706 !important; }
+        .text-danger { color: #DC2626 !important; }
+        .text-info { color: #0284C7 !important; }
+
+        /* Card System */
+        .card {
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03) !important;
+            overflow: hidden !important;
+        }
+        .card-header {
+            background-color: #FFFFFF !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            padding: 1rem 1.25rem !important;
+        }
+        .card-body {
+            padding: 1.25rem !important;
         }
     </style>
 
@@ -1071,8 +1472,7 @@
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isPostActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/post/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/post/table') ? 'text-white font-bold bg-white/10' : '' }}">Semua Berita</a>
                     <a href="{{ url('/dashboard/post/create') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/post/create') ? 'text-white font-bold bg-white/10' : '' }}">Tambah Berita</a>
-                    <a href="{{ url('/dashboard/postcategory/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/postcategory*') ? 'text-white font-bold bg-white/10' : '' }}">Kategori Berita</a>
-                    <a href="{{ url('/dashboard/tag/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/tag*') ? 'text-white font-bold bg-white/10' : '' }}">Tag Berita</a>
+                    <a href="{{ url('/dashboard/post-category/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/post*category*') ? 'text-white font-bold bg-white/10' : '' }}">Kategori Berita</a>
                     <a href="{{ url('/dashboard/pages/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/pages*') ? 'text-white font-bold bg-white/10' : '' }}">Halaman Statis</a>
                 </div>
             </div>
@@ -1106,7 +1506,7 @@
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isDocActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/download/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/download/table') ? 'text-white font-bold bg-white/10' : '' }}">Semua Dokumen</a>
                     <a href="{{ url('/dashboard/download/create') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/download/create') ? 'text-white font-bold bg-white/10' : '' }}">Unggah Dokumen</a>
-                    <a href="{{ url('/dashboard/downloadcategory/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/downloadcategory*') ? 'text-white font-bold bg-white/10' : '' }}">Kategori Dokumen</a>
+                    <a href="{{ url('/dashboard/download-category/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/download*category*') ? 'text-white font-bold bg-white/10' : '' }}">Kategori Dokumen</a>
                 </div>
             </div>
 
@@ -1154,7 +1554,7 @@
             </div>
 
             <!-- 7. Pengaturan Konten -->
-            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/linkterkait*'); @endphp
+            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/contact*'); @endphp
             <div class="menu-dropdown">
                 <button type="button" class="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition duration-150 menu-toggle {{ $isContentActive ? 'text-white font-bold bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                     <div class="flex items-center gap-3">
@@ -1166,7 +1566,7 @@
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isContentActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/slider/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/slider*') ? 'text-white font-bold bg-white/10' : '' }}">Slider Banner</a>
                     <a href="{{ url('/dashboard/pegawai/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/pegawai*') ? 'text-white font-bold bg-white/10' : '' }}">Data Pejabat & Pegawai</a>
-                    <a href="{{ url('/dashboard/linkterkait/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/linkterkait*') ? 'text-white font-bold bg-white/10' : '' }}">Link Terkait / Mitra Kerja</a>
+                    <a href="{{ url('/dashboard/contact/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/contact*') ? 'text-white font-bold bg-white/10' : '' }}">Pesan Masuk (Kontak)</a>
                 </div>
             </div>
 
@@ -1365,25 +1765,23 @@
     <!-- ========================================================================
          3. DELETE CONFIRMATION MODAL (Fixed, Modern, Hidden by Default)
          ======================================================================== -->
-    <div id="alertalldel" class="modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none !important;">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body text-center p-6 sm:p-8">
-                    <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto mb-4 shadow-sm">
-                        <i class="fas fa-trash-alt"></i>
-                    </div>
-                    <h3 class="text-base sm:text-lg font-black text-slate-800 mb-1">Konfirmasi Hapus Data</h3>
-                    <p class="text-xs text-slate-500 mb-6 leading-relaxed max-w-xs mx-auto">
-                        Apakah Anda yakin ingin menghapus data yang dipilih? Data yang telah dihapus tidak dapat dipulihkan kembali.
-                    </p>
-                    <div class="flex items-center justify-center gap-3">
-                        <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-xl font-bold text-xs" data-dismiss="modal" onclick="closeDeleteModal()">
-                            Batal
-                        </button>
-                        <button type="button" class="btn btn-danger px-5 py-2.5 rounded-xl font-bold text-xs" id="confirmdel">
-                            Ya, Hapus Data
-                        </button>
-                    </div>
+    <div id="alertalldel" class="modal fixed inset-0 z-[99999] hidden items-center justify-center p-4 bg-slate-950/65 backdrop-blur-xs transition-opacity duration-200" role="dialog" aria-modal="true" style="display: none !important;">
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100 font-sans transform transition-all" role="document">
+            <div class="modal-body text-center p-6 sm:p-8">
+                <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto mb-4 shadow-sm">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <h3 class="text-base sm:text-lg font-black text-slate-800 mb-1">Konfirmasi Hapus Data</h3>
+                <p class="text-xs text-slate-500 mb-6 leading-relaxed max-w-xs mx-auto">
+                    Apakah Anda yakin ingin menghapus data yang dipilih? Data yang telah dihapus tidak dapat dipulihkan kembali.
+                </p>
+                <div class="flex items-center justify-center gap-3">
+                    <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-xl font-bold text-xs" data-dismiss="modal" onclick="closeDeleteModal()">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-danger px-5 py-2.5 rounded-xl font-bold text-xs" id="confirmdel">
+                        Ya, Hapus Data
+                    </button>
                 </div>
             </div>
         </div>
@@ -1448,32 +1846,53 @@
             // Modal Handlers (Handles all modals reliably)
             var targetDeleteForm = null;
 
+            window.openDeleteModal = function (form) {
+                targetDeleteForm = form || null;
+                var $modal = $('#alertalldel');
+                $modal.removeClass('hidden').addClass('flex').removeAttr('style').css('display', 'flex');
+            };
+
+            window.closeDeleteModal = function () {
+                var $modal = $('#alertalldel');
+                $modal.fadeOut(150, function () {
+                    $(this).removeClass('flex').addClass('hidden').attr('style', 'display: none !important;');
+                });
+            };
+
             $(document).on('click', '[data-target="#alertalldel"], [data-toggle="modal"][data-target="#alertalldel"]', function (e) {
                 e.preventDefault();
-                targetDeleteForm = $(this).closest('form');
-                $('#alertalldel').fadeIn(150).css('display', 'flex');
+                var form = $(this).closest('form');
+                window.openDeleteModal(form);
             });
 
             $(document).on('click', '[data-toggle="modal"]', function (e) {
                 var target = $(this).data('target');
                 if (target && target !== '#alertalldel') {
                     e.preventDefault();
-                    $(target).fadeIn(150).css('display', 'flex');
+                    var $target = $(target);
+                    $target.removeClass('hidden').addClass('flex').removeAttr('style').css('display', 'flex');
                 }
             });
 
-            window.closeDeleteModal = function () {
-                $('#alertalldel').fadeOut(150);
-            };
-
             $(document).on('click', '[data-dismiss="modal"], .modal .close', function (e) {
                 e.preventDefault();
-                $(this).closest('.modal').fadeOut(150);
+                var $modal = $(this).closest('.modal');
+                if ($modal.is('#alertalldel')) {
+                    window.closeDeleteModal();
+                } else {
+                    $modal.fadeOut(150, function () {
+                        $(this).removeClass('flex').addClass('hidden').attr('style', 'display: none !important;');
+                    });
+                }
             });
 
             $(document).on('click', '.modal', function (e) {
-                if ($(e.target).hasClass('modal')) {
-                    $(this).fadeOut(150);
+                if ($(e.target).is('#alertalldel')) {
+                    window.closeDeleteModal();
+                } else if ($(e.target).hasClass('modal')) {
+                    $(this).fadeOut(150, function () {
+                        $(this).removeClass('flex').addClass('hidden').attr('style', 'display: none !important;');
+                    });
                 }
             });
 
@@ -1483,6 +1902,52 @@
                 } else {
                     $('form[action*="deleteall"]').submit();
                 }
+            });
+
+            // Summernote & Bootstrap Dropdown Toggle Engine
+            $(document).on('click', '.note-btn.dropdown-toggle, [data-toggle="dropdown"]', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $btn = $(this);
+                var $group = $btn.closest('.note-btn-group, .btn-group, .dropdown');
+                var $menu = $group.children('.note-dropdown-menu, .dropdown-menu');
+
+                // Close other dropdowns
+                $('.note-btn-group, .btn-group, .dropdown').not($group).removeClass('show');
+                $('.note-dropdown-menu, .dropdown-menu').not($menu).removeClass('show').hide();
+
+                // Toggle current dropdown
+                $group.toggleClass('show');
+                $menu.toggleClass('show');
+                if ($menu.hasClass('show')) {
+                    $menu.show();
+                } else {
+                    $menu.hide();
+                }
+            });
+
+            // Close dropdowns on outside click
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.note-btn-group, .btn-group, .dropdown').length) {
+                    $('.note-btn-group, .btn-group, .dropdown').removeClass('show');
+                    $('.note-dropdown-menu, .dropdown-menu').removeClass('show').hide();
+                }
+            });
+
+            // Universal Summernote Form Submit Sync
+            $(document).on('submit', 'form', function () {
+                $('.note-editor').each(function () {
+                    var $textarea = $(this).prev('textarea');
+                    if ($textarea.length) {
+                        try {
+                            if ($textarea.summernote('isEmpty')) {
+                                $textarea.val('');
+                            } else {
+                                $textarea.val($textarea.summernote('code'));
+                            }
+                        } catch (err) {}
+                    }
+                });
             });
         });
     </script>

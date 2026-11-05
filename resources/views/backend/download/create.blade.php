@@ -160,5 +160,13 @@
                 },
                 height: 300,
             });
+
+        $('form').on('submit', function () {
+            if ($('#content').summernote('isEmpty')) {
+                $('#content').val('');
+            } else {
+                $('#content').val($('#content').summernote('code'));
+            }
+        });
     </script>
 @endpush

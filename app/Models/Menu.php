@@ -27,7 +27,7 @@ class Menu extends Model
      *
      * @var array
      */
-    protected $fillable = ['parent_id', 'group_id', 'name', 'url', 'target', 'position', 'create_user', 'update_user'];
+    protected $fillable = ['parent_id', 'group_id', 'name', 'url', 'target', 'position', 'created_by', 'updated_by'];
 
 	public function parent() {
 		return $this->hasOne('App\Models\Menu', 'id', 'parent_id')->orderBy('position');

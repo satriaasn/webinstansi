@@ -65,8 +65,8 @@ class PermohonanInformasiController extends Controller
             })
             ->editColumn('nomor_tiket', function ($item) {
                 $hash = Hashids::encode($item->id);
-                return '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="tx-bold tx-inverse" title="Lihat Detail">' 
-                    . e($item->nomor_tiket) . '</a>';
+                return '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="inline-flex items-center gap-1.5 font-black text-xs text-[#1A56DB] hover:underline" title="Klik untuk Lihat Detail & Tanggapi">' 
+                    . '<i class="fas fa-ticket text-[11px]"></i> <span>' . e($item->nomor_tiket) . '</span></a>';
             })
             ->addColumn('pemohon', function ($item) {
                 $cat = '<span class="badge badge-light border text-muted px-1 mr-1">' . e($item->kategori_pemohon) . '</span>';
@@ -82,20 +82,20 @@ class PermohonanInformasiController extends Controller
             })
             ->addColumn('notif_email', function ($item) {
                 if ($item->email_notifikasi_terkirim) {
-                    return '<span class="badge badge-success px-2 py-1" title="Terkirim: ' . ($item->tanggal_email_terakhir ? $item->tanggal_email_terakhir->format('d/m/Y H:i') : '') . '"><i class="fa fa-check"></i> Terkirim</span>';
+                    return '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Terkirim: ' . ($item->tanggal_email_terakhir ? $item->tanggal_email_terakhir->format('d/m/Y H:i') : '') . '"><i class="fas fa-check text-[9px]"></i> Terkirim</span>';
                 }
-                return '<span class="badge badge-secondary px-2 py-1"><i class="fa fa-minus"></i> Belum</span>';
+                return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200"><i class="fas fa-minus text-[8px]"></i> Belum</span>';
             })
             ->editColumn('created_at', function ($item) {
-                return '<div class="tx-12">' . $item->created_at->format('d/m/Y') . '</div>'
-                    . '<div class="tx-11 tx-gray-500">' . $item->created_at->format('H:i') . ' WIB</div>';
+                return '<div class="text-xs font-bold text-slate-800">' . $item->created_at->format('d/m/Y') . '</div>'
+                    . '<div class="text-[11px] text-slate-400 font-medium">' . $item->created_at->format('H:i') . ' WIB</div>';
             })
             ->addColumn('action', function ($item) {
                 $hash = Hashids::encode($item->id);
-                $btn = '<div style="text-align:center; white-space:nowrap;">';
-                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="btn btn-secondary btn-sm" title="Lihat Detail & Tanggapi"><i class="fa fa-eye"></i></a> ';
-                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash . '/send-email') . '" class="btn btn-info btn-sm" title="Kirim Notifikasi Email ke Pemohon" onclick="return confirm(\'Kirim pemberitahuan email status ke ' . e($item->email) . '?\')"><i class="fa fa-paper-plane"></i></a> ';
-                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="btn btn-danger btn-sm" data-delete="" title="Hapus"><i class="fa fa-trash"></i></a>';
+                $btn = '<div class="inline-flex items-center gap-1.5" style="white-space:nowrap;">';
+                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="w-8 h-8 rounded-lg bg-blue-50 text-[#1A56DB] hover:bg-[#1A56DB] hover:text-white flex items-center justify-center text-xs transition border border-blue-200" title="Lihat Detail & Tanggapi"><i class="fas fa-eye"></i></a>';
+                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash . '/send-email') . '" class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-600 hover:text-white flex items-center justify-center text-xs transition border border-sky-200" title="Kirim Notifikasi Email ke Pemohon" onclick="return confirm(\'Kirim pemberitahuan email status ke ' . e($item->email) . '?\')"><i class="fas fa-paper-plane"></i></a>';
+                $btn .= '<a href="' . url('dashboard/permohonan-informasi/' . $hash) . '" class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white flex items-center justify-center text-xs transition border border-rose-200" data-delete="" title="Hapus"><i class="fas fa-trash-alt"></i></a>';
                 $btn .= '</div>';
                 return $btn;
             })

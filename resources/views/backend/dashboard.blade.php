@@ -410,63 +410,112 @@
             </div>
         </div>
 
-        <!-- Widget C: Layanan PPID (col-span-4) -->
+        <!-- Widget C: Laporan Permintaan Informasi & Layanan PPID (col-span-4) -->
         <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex flex-col justify-between">
             
-            <!-- Top Gradient Box (Matching Mockup) -->
-            <div class="bg-gradient-to-r from-[#0B2545] to-[#1A56DB] rounded-2xl p-5 text-white relative overflow-hidden shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#1A56DB] flex items-center justify-center text-xs">
+                        <i class="fas fa-file-shield"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xs sm:text-sm font-bold text-slate-800 m-0">Laporan Permintaan Informasi</h2>
+                        <span class="text-[10px] text-slate-400">Layanan PPID Provinsi Lampung</span>
+                    </div>
+                </div>
+                <a href="{{ url('dashboard/permohonan-informasi/table') }}" class="text-xs font-bold text-[#1A56DB] hover:text-blue-800 transition flex items-center gap-1 text-decoration-none">
+                    Kelola <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <!-- Main Status Card with High Contrast -->
+            <div class="bg-gradient-to-br from-[#0B2545] via-[#0E3566] to-[#1A56DB] rounded-2xl p-5 text-white relative overflow-hidden shadow-sm flex flex-col justify-between">
                 <!-- Background subtle watermark shield -->
-                <i class="fas fa-shield-halved absolute -right-4 -bottom-4 text-7xl text-white/10 pointer-events-none"></i>
+                <i class="fas fa-shield-halved absolute -right-3 -bottom-3 text-7xl text-white/10 pointer-events-none"></i>
                 
                 <div class="relative z-10">
-                    <h2 class="text-base sm:text-lg font-black tracking-tight text-white m-0">Layanan PPID</h2>
-                    <p class="text-[11px] text-blue-100 mt-1 leading-snug line-clamp-2 m-0">
-                        Pejabat Pengelola Informasi dan Dokumentasi Bappeda Provinsi Lampung
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded-md border border-amber-400/30">
+                            PPID Bappeda
+                        </span>
+                        @if(($ppidCounts['pending'] ?? 0) > 0)
+                            <span class="text-[10px] font-bold text-white bg-rose-600 px-2.5 py-0.5 rounded-md shadow-xs animate-pulse">
+                                {{ $ppidCounts['pending'] }} Permohonan Baru
+                            </span>
+                        @endif
+                    </div>
+                    <div class="text-lg font-black text-white mt-2 leading-tight">
+                        Layanan PPID
+                    </div>
+                    <p class="text-xs text-blue-100/90 mt-1 leading-relaxed m-0">
+                        Pejabat Pengelola Informasi dan Dokumentasi
                     </p>
                 </div>
 
-                <div class="relative z-10 mt-4">
+                <!-- 3 Clear High-Contrast Counters -->
+                <div class="relative z-10 grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-white/20 text-center">
+                    <div class="bg-white/15 backdrop-blur-xs rounded-xl p-2 border border-white/20">
+                        <div class="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Pending</div>
+                        <div class="text-lg font-black text-white mt-0.5">
+                            {{ $ppidCounts['pending'] ?? 0 }}
+                        </div>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur-xs rounded-xl p-2 border border-white/20">
+                        <div class="text-[10px] text-sky-200 font-bold uppercase tracking-wider">Diproses</div>
+                        <div class="text-lg font-black text-white mt-0.5">
+                            {{ $ppidCounts['diproses'] ?? 0 }}
+                        </div>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur-xs rounded-xl p-2 border border-white/20">
+                        <div class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider">Selesai</div>
+                        <div class="text-lg font-black text-white mt-0.5">
+                            {{ $ppidCounts['selesai'] ?? 0 }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 mt-3.5">
                     <a href="{{ url('dashboard/permohonan-informasi/table') }}" 
-                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-[#1A56DB] font-extrabold text-xs shadow-md hover:bg-blue-50 transition transform hover:-translate-y-0.5 text-decoration-none">
-                        <span>Akses Layanan</span>
+                       class="w-full flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl bg-white text-[#0B2545] hover:text-[#1A56DB] hover:bg-blue-50 font-black text-xs shadow transition text-decoration-none">
+                        <span>Buka Data Permohonan</span>
                         <i class="fas fa-arrow-right text-[10px]"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- Bottom 4 Pills (Matching Mockup & Responsive) -->
+            <!-- Bottom 4 Pills: Kategori Informasi Publik (High Contrast & Readable) -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-3 border-t border-slate-100">
                 
                 <!-- Pill 1: Berkala -->
-                <a href="{{ url('download/informasi-berkala') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/60 hover:border-blue-200 transition text-center group text-decoration-none">
-                    <div class="w-7 h-7 rounded-lg bg-blue-100/70 text-[#1A56DB] flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition">
-                        <i class="far fa-folder"></i>
+                <a href="{{ url('download/informasi-berkala') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/80 hover:border-blue-300 transition text-center group text-decoration-none">
+                    <div class="w-7 h-7 rounded-lg bg-blue-100 text-[#1A56DB] flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition shadow-xs">
+                        <i class="far fa-folder-open"></i>
                     </div>
-                    <span class="text-[9px] font-bold text-slate-700 leading-tight">Informasi Berkala</span>
+                    <span class="text-[11px] font-bold text-slate-800 leading-tight">Berkala</span>
                 </a>
 
                 <!-- Pill 2: Serta-Merta -->
-                <a href="{{ url('download/informasi-serta-merta') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-200/60 hover:border-amber-200 transition text-center group text-decoration-none">
-                    <div class="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition">
+                <a href="{{ url('download/informasi-serta-merta') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-200/80 hover:border-amber-300 transition text-center group text-decoration-none">
+                    <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition shadow-xs">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <span class="text-[9px] font-bold text-slate-700 leading-tight">Informasi Serta-Merta</span>
+                    <span class="text-[11px] font-bold text-slate-800 leading-tight">Serta Merta</span>
                 </a>
 
                 <!-- Pill 3: Setiap Saat -->
-                <a href="{{ url('download/informasi-setiap-saat') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/60 hover:border-emerald-200 transition text-center group text-decoration-none">
-                    <div class="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition">
+                <a href="{{ url('download/informasi-setiap-saat') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 transition text-center group text-decoration-none">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition shadow-xs">
                         <i class="fas fa-clock-rotate-left"></i>
                     </div>
-                    <span class="text-[9px] font-bold text-slate-700 leading-tight">Informasi Setiap Saat</span>
+                    <span class="text-[11px] font-bold text-slate-800 leading-tight">Setiap Saat</span>
                 </a>
 
                 <!-- Pill 4: Dikecualikan -->
-                <a href="{{ url('download/informasi-dikecualikan') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-purple-50 border border-slate-200/60 hover:border-purple-200 transition text-center group text-decoration-none">
-                    <div class="w-7 h-7 rounded-lg bg-purple-100/70 text-purple-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition">
+                <a href="{{ url('download/informasi-dikecualikan') }}" target="_blank" class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 hover:bg-purple-50 border border-slate-200/80 hover:border-purple-300 transition text-center group text-decoration-none">
+                    <div class="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-xs mb-1 group-hover:scale-110 transition shadow-xs">
                         <i class="fas fa-lock"></i>
                     </div>
-                    <span class="text-[9px] font-bold text-slate-700 leading-tight">Informasi Dikecualikan</span>
+                    <span class="text-[11px] font-bold text-slate-800 leading-tight">Dikecualikan</span>
                 </a>
 
             </div>

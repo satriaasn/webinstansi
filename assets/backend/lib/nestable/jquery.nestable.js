@@ -81,12 +81,22 @@
             });
 
             var onStartEvent = function (e) {
-                var handle = $(e.target);
+                var target = $(e.target);
+
+                // Ignore clicks on buttons, links, inputs, and interactive controls
+                if (target.is('button, a, input, select, textarea') || 
+                    target.closest('button, a, input, select, textarea, .btn, .btn-hierarchy, [data-action]').length ||
+                    target.closest('.' + list.options.noDragClass).length) {
+                    return;
+                }
+
+                var handle = target;
                 if (!handle.hasClass(list.options.handleClass)) {
-                    if (handle.closest('.' + list.options.noDragClass).length) {
-                        return;
+                    handle = target.closest('.' + list.options.handleClass);
+                    // If clicked inside item or dd3-content, resolve to the item's handle
+                    if (!handle.length && target.closest('.' + list.options.itemClass).length) {
+                        handle = target.closest('.' + list.options.itemClass).find('> .' + list.options.handleClass);
                     }
-                    handle = handle.closest('.' + list.options.handleClass);
                 }
 
                 if (!handle.length || list.dragEl) {
@@ -217,10 +227,15 @@
 
         setParent: function (li) {
             if (li.children(this.options.listNodeName).length) {
-                li.prepend($(this.options.expandBtnHTML));
-                li.prepend($(this.options.collapseBtnHTML));
+                if (!li.children('[data-action="collapse"]').length) {
+                    li.prepend($(this.options.collapseBtnHTML));
+                }
+                if (!li.children('[data-action="expand"]').length) {
+                    li.prepend($(this.options.expandBtnHTML));
+                }
             }
             li.children('[data-action="expand"]').hide();
+            li.children('[data-action="collapse"]').show();
         },
 
         unsetParent: function (li) {
@@ -236,8 +251,8 @@
 
             this.placeEl.css('height', dragItem.height());
 
-            mouse.offsetX = e.offsetX !== undefined ? e.offsetX : e.pageX - target.offset().left;
-            mouse.offsetY = e.offsetY !== undefined ? e.offsetY : e.pageY - target.offset().top;
+            mouse.offsetX = e.pageX - dragItem.offset().left;
+            mouse.offsetY = e.pageY - dragItem.offset().top;
             mouse.startX = mouse.lastX = e.pageX;
             mouse.startY = mouse.lastY = e.pageY;
 
@@ -331,42 +346,43 @@
             mouse.dirAx = newAx;
 
             /**
-             * move horizontal
+             * move horizontal (indent/outdent hierarchy)
              */
-            if (mouse.dirAx && mouse.distAxX >= opt.threshold) {
-                // reset move distance on x-axis for new phase
-                mouse.distAxX = 0;
+            var deltaX = mouse.nowX - mouse.startX;
+
+            // Indent: Dragged right by threshold (>= 20px)
+            if (deltaX >= opt.threshold) {
                 prev = this.placeEl.prev(opt.itemNodeName);
-                // increase horizontal level if previous sibling exists and is not collapsed
-                if (mouse.distX > 0 && prev.length && !prev.hasClass(opt.collapsedClass)) {
-                    // cannot increase level when item above is collapsed
+                if (prev.length && !prev.hasClass(opt.collapsedClass)) {
                     list = prev.find(opt.listNodeName).last();
-                    // check if depth limit has reached
                     depth = this.placeEl.parents(opt.listNodeName).length;
                     if (depth + this.dragDepth <= opt.maxDepth) {
-                        // create new sub-level if one doesn't exist
                         if (!list.length) {
                             list = $('<' + opt.listNodeName + '/>').addClass(opt.listClass);
                             list.append(this.placeEl);
                             prev.append(list);
                             this.setParent(prev);
                         } else {
-                            // else append to next level up
                             list = prev.children(opt.listNodeName).last();
                             list.append(this.placeEl);
                         }
+                        mouse.startX = mouse.nowX;
                     }
                 }
-                // decrease horizontal level
-                if (mouse.distX < 0) {
-                    // we can't decrease a level if an item preceeds the current one
-                    next = this.placeEl.next(opt.itemNodeName);
-                    if (!next.length) {
-                        parent = this.placeEl.parent();
-                        this.placeEl.closest(opt.itemNodeName).after(this.placeEl);
+            }
+
+            // Outdent: Dragged left by threshold (<= -20px)
+            if (deltaX <= -opt.threshold) {
+                next = this.placeEl.next(opt.itemNodeName);
+                if (!next.length) {
+                    parent = this.placeEl.parent();
+                    var grandParentItem = this.placeEl.closest(opt.itemNodeName);
+                    if (grandParentItem.length) {
+                        grandParentItem.after(this.placeEl);
                         if (!parent.children().length) {
                             this.unsetParent(parent.parent());
                         }
+                        mouse.startX = mouse.nowX;
                     }
                 }
             }
@@ -377,17 +393,21 @@
             if (!hasPointerEvents) {
                 this.dragEl[0].style.visibility = 'hidden';
             }
-            this.pointEl = $(document.elementFromPoint(e.pageX - document.body.scrollLeft, e.pageY - (window.pageYOffset || document.documentElement.scrollTop)));
+            var clientX = e.clientX !== undefined ? e.clientX : (e.pageX - (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0));
+            var clientY = e.clientY !== undefined ? e.clientY : (e.pageY - (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0));
+            this.pointEl = $(document.elementFromPoint(clientX, clientY));
             if (!hasPointerEvents) {
                 this.dragEl[0].style.visibility = 'visible';
             }
-            if (this.pointEl.hasClass(opt.handleClass)) {
-                this.pointEl = this.pointEl.parent(opt.itemNodeName);
-            }
             if (this.pointEl.hasClass(opt.emptyClass)) {
                 isEmpty = true;
-            } else if (!this.pointEl.length || !this.pointEl.hasClass(opt.itemClass)) {
-                return;
+            } else {
+                var targetItem = this.pointEl.closest('.' + opt.itemClass);
+                if (targetItem.length) {
+                    this.pointEl = targetItem;
+                } else {
+                    return;
+                }
             }
 
             // find parent list of item under cursor
@@ -397,39 +417,37 @@
             /**
              * move vertical
              */
-            if (!mouse.dirAx || isNewRoot || isEmpty) {
-                // check if groups match if dragging over new root
-                if (isNewRoot && opt.group !== pointElRoot.data('nestable-group')) {
-                    return;
-                }
-                // check depth limit
-                depth = this.dragDepth - 1 + this.pointEl.parents(opt.listNodeName).length;
-                if (depth > opt.maxDepth) {
-                    return;
-                }
+            if (isNewRoot && opt.group !== pointElRoot.data('nestable-group')) {
+                return;
+            }
+            // check depth limit
+            depth = this.dragDepth - 1 + this.pointEl.parents(opt.listNodeName).length;
+            if (depth > opt.maxDepth) {
+                return;
+            }
+            parent = this.placeEl.parent();
+            if (isEmpty) {
+                list = $(document.createElement(opt.listNodeName)).addClass(opt.listClass);
+                list.append(this.placeEl);
+                this.pointEl.replaceWith(list);
+            } else if (this.pointEl[0] !== this.placeEl[0]) {
                 var before = e.pageY < (this.pointEl.offset().top + this.pointEl.height() / 2);
-                parent = this.placeEl.parent();
-                // if empty create new list to replace empty placeholder
-                if (isEmpty) {
-                    list = $(document.createElement(opt.listNodeName)).addClass(opt.listClass);
-                    list.append(this.placeEl);
-                    this.pointEl.replaceWith(list);
-                } else if (before) {
+                if (before) {
                     this.pointEl.before(this.placeEl);
                 } else {
                     this.pointEl.after(this.placeEl);
                 }
-                if (!parent.children().length) {
-                    this.unsetParent(parent.parent());
-                }
-                if (!this.dragRootEl.find(opt.itemNodeName).length) {
-                    this.dragRootEl.append('<div class="' + opt.emptyClass + '"/>');
-                }
-                // parent root list has changed
-                if (isNewRoot) {
-                    this.dragRootEl = pointElRoot;
-                    this.hasNewRoot = this.el[0] !== this.dragRootEl[0];
-                }
+            }
+            if (!parent.children().length) {
+                this.unsetParent(parent.parent());
+            }
+            if (!this.dragRootEl.find(opt.itemNodeName).length) {
+                this.dragRootEl.append('<div class="' + opt.emptyClass + '"/>');
+            }
+            // parent root list has changed
+            if (isNewRoot) {
+                this.dragRootEl = pointElRoot;
+                this.hasNewRoot = this.el[0] !== this.dragRootEl[0];
             }
         }
 

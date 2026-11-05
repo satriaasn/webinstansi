@@ -110,6 +110,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('dashboard/roles/index','Backend\\RolesController@getIndex');
 	Route::get('dashboard/roles/table','Backend\\RolesController@getIndex');
+	Route::get('dashboard/role/table','Backend\\RolesController@getIndex');
 	Route::get('dashboard/roles/data','Backend\\RolesController@anyData');
 	Route::post('dashboard/roles/deleteall', 'Backend\\RolesController@deleteAll');
 	Route::resource('dashboard/roles', 'Backend\RolesController');
@@ -128,6 +129,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::get('dashboard/activitylogs/index','Backend\\ActivityLogsController@getIndex');
 	Route::get('dashboard/activitylogs/table','Backend\\ActivityLogsController@getIndex');
+	Route::get('dashboard/log/table','Backend\\ActivityLogsController@getIndex');
 	Route::get('dashboard/activitylogs/data','Backend\\ActivityLogsController@anyData');
 	Route::post('dashboard/activitylogs/deleteall', 'Backend\\ActivityLogsController@deleteAll');
 	Route::resource('dashboard/activitylogs', 'Backend\ActivityLogsController')->only(['index', 'show', 'destroy']);
@@ -158,6 +160,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard/post-category/data','Backend\\PostCategoryController@anyData');
 	Route::post('dashboard/post-category/deleteall', 'Backend\\PostCategoryController@deleteAll');
 	Route::resource('dashboard/post-category', 'Backend\PostCategoryController');
+	// Alias routes without hyphen for postcategory
+	Route::get('dashboard/postcategory/index','Backend\\PostCategoryController@getIndex');
+	Route::get('dashboard/postcategory/table','Backend\\PostCategoryController@getIndex');
+	Route::get('dashboard/postcategory/data','Backend\\PostCategoryController@anyData');
+	Route::post('dashboard/postcategory/deleteall', 'Backend\\PostCategoryController@deleteAll');
+	Route::resource('dashboard/postcategory', 'Backend\PostCategoryController');
 
 	Route::get('dashboard/agenda/index','Backend\\AgendaController@getIndex');
 	Route::get('dashboard/agenda/table','Backend\\AgendaController@getIndex');
@@ -176,9 +184,16 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard/download-category/data','Backend\\DownloadCategoryController@anyData');
 	Route::post('dashboard/download-category/deleteall', 'Backend\\DownloadCategoryController@deleteAll');
 	Route::resource('dashboard/download-category', 'Backend\DownloadCategoryController');
+	// Alias routes without hyphen for downloadcategory
+	Route::get('dashboard/downloadcategory/index','Backend\\DownloadCategoryController@getIndex');
+	Route::get('dashboard/downloadcategory/table','Backend\\DownloadCategoryController@getIndex');
+	Route::get('dashboard/downloadcategory/data','Backend\\DownloadCategoryController@anyData');
+	Route::post('dashboard/downloadcategory/deleteall', 'Backend\\DownloadCategoryController@deleteAll');
+	Route::resource('dashboard/downloadcategory', 'Backend\DownloadCategoryController');
 
 	Route::get('dashboard/gallery/index','Backend\\GalleryController@getIndex');
 	Route::get('dashboard/gallery/table','Backend\\GalleryController@getIndex');
+	Route::get('dashboard/galery/table','Backend\\GalleryController@getIndex');
 	Route::get('dashboard/gallery/data','Backend\\GalleryController@anyData');
 	Route::post('dashboard/gallery/deleteall', 'Backend\\GalleryController@deleteAll');
 	Route::resource('dashboard/gallery', 'Backend\GalleryController');

@@ -101,17 +101,31 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ callassetspath('backend/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ callassetspath('backend/lib/summernote/summernote-bs4.min.js') }}"></script>
     <script type="text/javascript">
-        CKEDITOR.replace('editor');
         $(function () {
             $('.select2').select2({minimumResultsForSearch: Infinity});
 
-            $('.text-editor').summernote({
-                height: 150,
-                tooltip: false
-            })
+            $('#content').summernote({
+                height: 250,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview']]
+                ]
+            });
+
+            $('form').on('submit', function () {
+                if ($('#content').summernote('isEmpty')) {
+                    $('#content').val('');
+                } else {
+                    $('#content').val($('#content').summernote('code'));
+                }
+            });
         });
     </script>
 @endpush

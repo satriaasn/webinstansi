@@ -38,7 +38,7 @@ class ContactController extends Controller
 	 */
     public function getIndex()
 	{
-		if(Auth::user()->can('users')) {
+		if(Auth::user()->can('contact') || Auth::user()->can('users')) {
 			return view('backend.contact.datatable');
 		} else {
 			return redirect('dashboard');
