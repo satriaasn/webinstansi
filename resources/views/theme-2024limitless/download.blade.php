@@ -117,8 +117,8 @@
                     </table>
                 </div>
 
-                <div class="pt-6 flex justify-center">
-                    {{ $downloads->links() }}
+                <div class="pt-6 flex justify-center w-full overflow-x-auto">
+                    {{ $downloads->onEachSide(1)->links() }}
                 </div>
             </div>
         </div>

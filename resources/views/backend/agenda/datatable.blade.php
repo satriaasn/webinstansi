@@ -23,6 +23,12 @@
                 <div class="card-options">
                     <a href="{{ url('dashboard/agenda/create') }}" class="btn btn-success btn-sm"
                        title="Add New Agenda"><i class="fa fa-plus"></i> Add <span class="hidden-xs-down">New</span></a>
+                    <form action="{{ route('dashboard.agenda.sync_api') }}" method="POST" style="display:inline-block; margin-left:6px;">
+                        @csrf
+                        <button type="submit" class="btn btn-primary btn-sm" title="Sinkronisasi dengan API Agenda Bappeda" onclick="return confirm('Mulai sinkronisasi data agenda dari API pusat?')">
+                            <i class="fa fa-refresh"></i> Tarik Data API Agenda
+                        </button>
+                    </form>
                 </div>
             </div>
 

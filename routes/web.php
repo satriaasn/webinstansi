@@ -171,6 +171,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard/agenda/table','Backend\\AgendaController@getIndex');
 	Route::get('dashboard/agenda/data','Backend\\AgendaController@anyData');
 	Route::post('dashboard/agenda/deleteall', 'Backend\\AgendaController@deleteAll');
+	Route::post('dashboard/agenda/sync-api', 'Backend\\AgendaController@syncApi')->name('dashboard.agenda.sync_api');
 	Route::resource('dashboard/agenda', 'Backend\AgendaController');
 
 	Route::get('dashboard/download/index','Backend\\DownloadController@getIndex');

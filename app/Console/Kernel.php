@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('backdoor:cleanup')->everyMinute();
+        $schedule->command('agenda:sync --pages=3')->everyFifteenMinutes()->withoutOverlapping();
     }
 
     /**

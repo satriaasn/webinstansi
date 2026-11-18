@@ -25,13 +25,25 @@ class AgendaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-		$agendas = Agenda::leftJoin('users', 'users.id', 'agendas.created_by')
+		$query = Agenda::leftJoin('users', 'users.id', 'agendas.created_by')
 			->where('agendas.active', '=', 'Y')
-			->select('agendas.*', 'users.name')
-			->orderBy('agendas.id', 'desc')
-			->paginate(6);
+			->select('agendas.*', 'users.name');
+
+		if ($request->filled('q')) {
+			$search = $request->get('q');
+			$query->where(function ($q) use ($search) {
+				$q->where('agendas.title', 'like', "%{$search}%")
+				  ->orWhere('agendas.location', 'like', "%{$search}%")
+				  ->orWhere('agendas.penyelenggara', 'like', "%{$search}%")
+				  ->orWhere('agendas.content', 'like', "%{$search}%");
+			});
+		}
+
+		$agendas = $query->orderBy('agendas.start', 'desc')
+			->paginate(9)
+			->withQueryString();
 
 		return view(getTheme('agenda'), compact('agendas'));
     }
@@ -39,9 +51,18 @@ class AgendaController extends Controller
 	public function detail($seotitle)
     {
 		$agenda = Agenda::leftJoin('users', 'users.id', 'agendas.created_by')
-			->where([['agendas.active', '=', 'Y'],['seotitle', '=', $seotitle]])
+			->where('agendas.active', '=', 'Y')
+			->where(function ($q) use ($seotitle) {
+				$q->where('agendas.seotitle', '=', $seotitle)
+				  ->orWhere('agendas.api_id', '=', $seotitle);
+			})
 			->select('agendas.*', 'users.name')
 			->first();
+
+		if (!$agenda) {
+			abort(404, 'Agenda kegiatan tidak ditemukan.');
+		}
+
 		return view(getTheme('detailagenda'), compact('agenda'));
     }
 

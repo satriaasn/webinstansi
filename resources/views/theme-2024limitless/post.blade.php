@@ -65,8 +65,8 @@
             @endforelse
 
             <!-- Pagination -->
-            <div class="pt-4 flex justify-center">
-                {{ $posts->links() }}
+            <div class="pt-6 flex justify-center w-full overflow-x-auto">
+                {{ $posts->onEachSide(1)->links() }}
             </div>
         </div>
 

@@ -339,14 +339,19 @@
                                     </a>
                                 </h3>
                                 <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-location-dot text-rose-500 text-[11px]"></i> 
-                                        <span>{{ strip_tags($agenda->content) ?: 'Ruang Rapat Bappeda' }}</span>
+                                    <span class="flex items-center gap-1 max-w-full">
+                                        <i class="fas fa-location-dot text-rose-500 text-[11px] flex-shrink-0"></i> 
+                                        <span class="truncate max-w-[220px]" title="{{ $agenda->display_location }}">{{ $agenda->display_location }}</span>
                                     </span>
-                                    <span class="flex items-center gap-1">
+                                    <span class="flex items-center gap-1 flex-shrink-0">
                                         <i class="far fa-clock text-slate-400 text-[11px]"></i> 
-                                        <span>{{ date('H.i', strtotime($agenda->start)) }} WIB</span>
+                                        <span>{{ date('H:i', strtotime($agenda->start)) }} WIB</span>
                                     </span>
+                                    @if(!empty($agenda->pakaian))
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">
+                                            <i class="fas fa-shirt text-[9px] mr-1 text-slate-400"></i>{{ $agenda->pakaian }}
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

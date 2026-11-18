@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'agenda' => [
+        'base_url' => env('AGENDA_API_URL', 'https://sektrabappeda.my.id/api/v1'),
+        'api_key' => env('AGENDA_API_KEY', null),
+        'verify_ssl' => env('AGENDA_API_VERIFY_SSL', false),
+    ],
+
 ];

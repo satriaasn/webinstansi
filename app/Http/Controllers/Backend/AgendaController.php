@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Agenda;
 use App\Models\User;
+use App\Services\AgendaApiService;
 use Session;
 
 use Yajra\Datatables\Datatables;
@@ -86,6 +87,25 @@ class AgendaController extends Controller
 			})
 			->escapeColumns([])
 			->make(true);
+	}
+
+	/**
+	 * Sync agenda from sektrabappeda API
+	 */
+	public function syncApi(AgendaApiService $agendaService)
+	{
+		if (!Auth::user()->can('agenda')) {
+			return redirect('dashboard');
+		}
+
+		try {
+			$result = $agendaService->syncRecent(5, 30);
+			Session::flash('flash_message', "Berhasil mensinkronkan {$result['synced']} data agenda dari API Bappeda.");
+		} catch (\Throwable $e) {
+			Session::flash('flash_error', "Gagal sinkronisasi API: " . $e->getMessage());
+		}
+
+		return redirect('dashboard/agenda/table');
 	}
 
     /**

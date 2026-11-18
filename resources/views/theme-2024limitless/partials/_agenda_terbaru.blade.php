@@ -14,9 +14,18 @@
                     <i class="far fa-clock mr-1"></i>
                     {{ $agendaside->start ? date('d M Y H:i', strtotime($agendaside->start)) : 'Segera' }} WIB
                 </div>
-                <div class="text-xs font-semibold text-slate-800 group-hover:text-blue-700 line-clamp-2 leading-snug transition">
+                <div class="text-xs font-semibold text-slate-800 group-hover:text-blue-700 line-clamp-2 leading-snug transition mb-1">
                     {{ $agendaside->title }}
                 </div>
+                @php
+                    $loc = !empty($agendaside->location) ? $agendaside->location : trim(strip_tags($agendaside->content ?? ''));
+                @endphp
+                @if(!empty($loc))
+                    <div class="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                        <i class="fas fa-location-dot text-rose-500 text-[10px] flex-shrink-0"></i>
+                        <span class="truncate">{{ $loc }}</span>
+                    </div>
+                @endif
             </a>
         @empty
             <div class="text-center py-4 text-xs text-slate-400">

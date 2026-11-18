@@ -291,11 +291,11 @@ class HomeController extends Controller
     public static function agenda($limit, $offset = '0')
     {
         $cacheKey = "agenda_{$limit}_{$offset}";
-        return Cache::remember($cacheKey, 86400, function () use ($limit, $offset) {
+        return Cache::remember($cacheKey, 600, function () use ($limit, $offset) {
             $result = Agenda::leftJoin('users', 'users.id', 'agendas.created_by')
                 ->where('agendas.active', '=', 'Y')
                 ->select('agendas.*', 'users.name')
-                ->orderBy('agendas.id', 'desc')
+                ->orderBy('agendas.start', 'desc')
                 ->limit($limit)
                 ->offset($offset)
                 ->get();
