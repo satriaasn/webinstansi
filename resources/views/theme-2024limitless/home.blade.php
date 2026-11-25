@@ -631,14 +631,32 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            <!-- Column 1: Tentang Bappeda (4 cols) - Presisi & Terisi Penuh -->
+            <!-- Column 1: Tentang Bappeda (4 cols) - Mengambil dari Halaman Profile -->
+            @php
+                $profilePage = \App\Models\Pages::where('seotitle', 'profile')->where('active', 'Y')->first();
+                $profileUrl = $profilePage ? url('pages/' . $profilePage->seotitle) : url('pages/tentang-kami');
+                $profileImg = null;
+                if ($profilePage && !empty($profilePage->picture)) {
+                    $profileImg = berkas($profilePage->picture) ?: url('berkas/' . $profilePage->picture);
+                } elseif ($profilePage && preg_match('/<img[^>]+src=["\']([^"\']+)["\']/i', $profilePage->content ?? '', $imgMatch)) {
+                    $profileImg = $imgMatch[1];
+                }
+                if (empty($profileImg)) {
+                    $profileImg = getSetting('tentang_bappeda_image')
+                        ? (berkas(getSetting('tentang_bappeda_image')) ?: url('berkas/' . getSetting('tentang_bappeda_image')))
+                        : (file_exists(public_path('assets/images/gedung_bappeda.jpg')) ? asset('assets/images/gedung_bappeda.jpg') : asset('assets/images/lampung_hero_banner.jpg'));
+                }
+                $profileText = $profilePage
+                    ? \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($profilePage->content)))), 340)
+                    : (getSetting('tentang_bappeda_singkat') ?: 'Badan Perencanaan Pembangunan Daerah (Bappeda) Provinsi Lampung merupakan unsur penunjang urusan pemerintahan di bidang perencanaan pembangunan daerah.');
+            @endphp
             <div class="lg:col-span-4 flex flex-col">
                 <div class="flex items-center justify-between pb-2.5 mb-3.5 border-b border-slate-200">
                     <h2 class="text-sm sm:text-base font-black text-[#0B2545] flex items-center gap-2 m-0">
                         <i class="fas fa-landmark text-[#1A56DB]"></i>
                         <span>Tentang Bappeda</span>
                     </h2>
-                    <a href="{{ url('pages/tentang-kami') }}" class="text-[11px] font-bold text-[#1A56DB] hover:text-blue-800 transition flex items-center gap-1 text-decoration-none">
+                    <a href="{{ $profileUrl }}" class="text-[11px] font-bold text-[#1A56DB] hover:text-blue-800 transition flex items-center gap-1 text-decoration-none">
                         Profil <i class="fas fa-arrow-right text-[9px]"></i>
                     </a>
                 </div>
@@ -646,11 +664,11 @@
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm flex flex-col justify-between flex-1">
                     <div>
                         <div class="w-full h-40 rounded-xl overflow-hidden bg-slate-100 shadow-sm border border-slate-100 mb-3.5">
-                            <img src="{{ getSetting('tentang_bappeda_image') ? (berkas(getSetting('tentang_bappeda_image')) ?: url('berkas/' . getSetting('tentang_bappeda_image'))) : (file_exists(public_path('assets/images/gedung_bappeda.jpg')) ? asset('assets/images/gedung_bappeda.jpg') : asset('assets/images/lampung_hero_banner.jpg')) }}" 
-                                 alt="Gedung Bappeda Provinsi Lampung" class="w-full h-full object-cover">
+                            <img src="{{ $profileImg }}" 
+                                 alt="{{ $profilePage->title ?? 'Gedung Bappeda Provinsi Lampung' }}" class="w-full h-full object-cover">
                         </div>
-                        <p class="text-xs text-slate-600 leading-relaxed mb-2.5">
-                            {{ getSetting('tentang_bappeda_singkat') ?: 'Badan Perencanaan Pembangunan Daerah (Bappeda) Provinsi Lampung merupakan unsur penunjang urusan pemerintahan di bidang perencanaan pembangunan daerah serta penelitian dan pengembangan yang menjadi kewenangan Pemerintah Provinsi Lampung.' }}
+                        <p class="text-xs text-slate-600 leading-relaxed mb-2.5 text-justify">
+                            {{ $profileText }}
                         </p>
                         <div class="text-[11px] text-slate-500 space-y-1 bg-slate-50 rounded-xl p-2.5 border border-slate-100">
                             <div class="flex items-start gap-2">
@@ -665,7 +683,7 @@
                     </div>
                     <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
                         <span class="text-[11px] text-slate-400 font-medium truncate pr-2">Bappeda Provinsi Lampung</span>
-                        <a href="{{ url('pages/tentang-kami') }}" 
+                        <a href="{{ $profileUrl }}" 
                            class="px-3 py-1.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 transition text-decoration-none shadow-sm flex-shrink-0 hover:scale-105"
                            style="background-color: #EFF6FF !important; color: #1A56DB !important; border: 1px solid #BFDBFE !important;">
                             <span>Selengkapnya</span>
