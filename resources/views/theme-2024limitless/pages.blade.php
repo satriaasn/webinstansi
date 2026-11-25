@@ -35,8 +35,9 @@
         <!-- Page Body (8 cols) -->
         <article class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
             @if(!empty($pages->picture))
+                @php $pageImg = berkas($pages->picture) ?: url('berkas/' . $pages->picture); @endphp
                 <div class="rounded-xl overflow-hidden mb-6 bg-slate-100 max-h-[460px]">
-                    <img src="{{ berkas($pages->picture) }}" alt="{{ $pages->title }}" class="w-full h-auto object-cover mx-auto">
+                    <img src="{{ $pageImg }}" alt="{{ $pages->title }}" class="w-full h-auto max-h-[460px] object-contain mx-auto">
                 </div>
             @endif
 

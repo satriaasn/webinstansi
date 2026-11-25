@@ -36,8 +36,17 @@
                     </tr>
                     <tr>
                         <th> Picture</th>
-                        <td><a href="{{ berkas( $pages->picture) }}"
-                               id="quickview">{{ $pages->picture }}</a></td>
+                        <td>
+                            @if(!empty($pages->picture))
+                                @php $adminPageImg = berkas($pages->picture) ?: url('berkas/' . $pages->picture); @endphp
+                                <div class="mb-2">
+                                    <img src="{{ $adminPageImg }}" alt="{{ $pages->title }}" style="max-height:240px; border-radius:8px; object-fit:contain;">
+                                </div>
+                                <a href="{{ $adminPageImg }}" target="_blank" id="quickview">{{ $pages->picture }}</a>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th> Active</th>

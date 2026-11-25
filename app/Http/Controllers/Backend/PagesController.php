@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 use App\Models\Pages;
@@ -119,7 +120,7 @@ class PagesController extends Controller
                 'seotitle' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -130,10 +131,14 @@ class PagesController extends Controller
             if ($request->hasFile('picture')) {
                 $image = $request->file('picture');
                 $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
+                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                }
                 $requestData['picture'] = $hashImage;
             }
             Pages::create($requestData);
+            Cache::forget('page_detail_' . ($requestData['seotitle'] ?? ''));
 
             Session::flash('flash_message', 'Pages added!');
 
@@ -199,7 +204,7 @@ class PagesController extends Controller
                 'seotitle' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -209,11 +214,17 @@ class PagesController extends Controller
             if ($request->hasFile('picture')) {
                 $image = $request->file('picture');
                 $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
+                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
+                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
+                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
+                }
                 $requestData['picture'] = $hashImage;
             }
             $pages = Pages::findOrFail($ids[0]);
+            $oldSeo = $pages->seotitle;
             $pages->update($requestData);
+            Cache::forget('page_detail_' . $oldSeo);
+            Cache::forget('page_detail_' . $pages->seotitle);
 
             Session::flash('flash_message', 'Pages updated!');
 
