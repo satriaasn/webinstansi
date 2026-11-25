@@ -99,7 +99,7 @@
         </button>
         <!-- Modal Video Iframe -->
         <div class="aspect-video w-full bg-black">
-            <iframe id="videoIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe id="videoIframe" class="w-full h-full" src="" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
         <!-- Modal Caption -->
         <div class="p-4 bg-slate-900 text-white text-xs sm:text-sm font-semibold border-t border-white/10" id="videoCaption">

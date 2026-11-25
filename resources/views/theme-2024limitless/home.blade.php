@@ -688,32 +688,41 @@
                 </div>
 
                 @php
-                    $videosList = \App\Models\Video::where('active', 'Y')->orderBy('id', 'desc')->take(3)->get();
+                    $videosList = \App\Models\Video::where('active', 'Y')->orderBy('id', 'desc')->take(4)->get();
                     $mainVideo = $videosList->first();
-                    $subVideos = $videosList->slice(1, 2);
+                    $subVideos = $mainVideo ? $videosList->where('id', '!=', $mainVideo->id)->take(2) : collect();
+                    $mainYtId = $mainVideo ? trim($mainVideo->youtube_id) : '';
                 @endphp
 
                 <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm flex flex-col justify-between flex-1">
                     @if($mainVideo)
                         <div>
-                            <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-sm mb-3">
+                            <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-sm mb-3 relative">
                                 <iframe id="home-youtube-player"
                                         class="w-full h-full"
-                                        src="https://www.youtube.com/embed/{{ $mainVideo->youtube_id }}"
+                                        src="https://www.youtube.com/embed/{{ $mainYtId }}?rel=0"
                                         title="{{ $mainVideo->title }}"
                                         frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                         allowfullscreen></iframe>
                             </div>
-                            <h3 id="home-youtube-title" class="text-xs font-bold text-[#0B2545] line-clamp-2 leading-snug mb-3">
-                                {{ $mainVideo->title }}
-                            </h3>
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <h3 id="home-youtube-title" class="text-xs font-bold text-[#0B2545] line-clamp-2 leading-snug m-0">
+                                    {{ $mainVideo->title }}
+                                </h3>
+                                <a id="home-youtube-ext" href="https://www.youtube.com/watch?v={{ $mainYtId }}" target="_blank" rel="noopener"
+                                   class="text-[10px] font-bold text-red-600 hover:underline flex-shrink-0 whitespace-nowrap" title="Buka di YouTube">
+                                    <i class="fab fa-youtube mr-0.5"></i> Buka
+                                </a>
+                            </div>
 
                             @if($subVideos->count() > 0)
                                 <div class="space-y-1.5 border-t border-slate-100 pt-2.5">
                                     @foreach($subVideos as $vid)
+                                        @php $vidId = trim($vid->youtube_id); @endphp
                                         <button type="button"
-                                                onclick="document.getElementById('home-youtube-player').src='https://www.youtube.com/embed/{{ $vid->youtube_id }}'; document.getElementById('home-youtube-title').textContent='{{ addslashes($vid->title) }}';"
+                                                onclick="document.getElementById('home-youtube-player').src='https://www.youtube.com/embed/{{ $vidId }}?rel=0&autoplay=1'; document.getElementById('home-youtube-title').textContent='{{ addslashes($vid->title) }}'; document.getElementById('home-youtube-ext').href='https://www.youtube.com/watch?v={{ $vidId }}';"
                                                 class="w-full text-left flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-50 transition group border-0 bg-transparent cursor-pointer">
                                             <span class="w-6 h-6 rounded-md bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0 text-[10px]">
                                                 <i class="fas fa-play"></i>
