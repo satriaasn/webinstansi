@@ -29,6 +29,8 @@ Route::middleware(['log.visitor'])->group(function () {
     Route::post('destinations/{post_id}/review', 'PostController@storeReview')->name('post.review.store');
     Route::get('agenda/all', 'AgendaController@index');
     Route::get('detail-agenda/{seotitle}', 'AgendaController@detail');
+    Route::get('perencanaan-pembangunan', 'DownloadController@perencanaan');
+    Route::get('data-informasi-pembangunan', 'StatistikMakroController@index')->name('data-pembangunan.index');
     Route::get('download/{seotitle}', 'DownloadController@index');
     Route::get('album/all', 'GalleryController@index');
     Route::get('detail-gallery/{seotitle}', 'GalleryController@detail');
@@ -50,6 +52,13 @@ Route::middleware(['log.visitor'])->group(function () {
     Route::post('permohonan-informasi/submit', [\App\Http\Controllers\PermohonanInformasiController::class, 'submit'])->name('permohonan-informasi.submit');
     Route::get('permohonan-informasi/sukses/{tiket}', [\App\Http\Controllers\PermohonanInformasiController::class, 'sukses'])->name('permohonan-informasi.sukses');
     Route::get('permohonan-informasi/jawaban/{tiket}', [\App\Http\Controllers\PermohonanInformasiController::class, 'downloadJawaban'])->name('permohonan-informasi.download-jawaban');
+    // ─────────────────────────────────────────────────────────────────
+
+    // ─── Keberatan Atas Permohonan Informasi (PPID) ──────────────────
+    Route::get('keberatan-informasi', [\App\Http\Controllers\KeberatanInformasiController::class, 'index'])->name('keberatan-informasi.index');
+    Route::get('keberatan-informasi/tracking', [\App\Http\Controllers\KeberatanInformasiController::class, 'tracking'])->name('keberatan-informasi.tracking');
+    Route::post('keberatan-informasi/submit', [\App\Http\Controllers\KeberatanInformasiController::class, 'submit'])->name('keberatan-informasi.submit');
+    Route::get('keberatan-informasi/sukses/{nomor}', [\App\Http\Controllers\KeberatanInformasiController::class, 'sukses'])->name('keberatan-informasi.sukses');
     // ─────────────────────────────────────────────────────────────────
 
     // ─── Legacy URLs Redirects (from previous CMS version) ───────────
@@ -237,6 +246,18 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('dashboard/slider/deleteall', 'Backend\\SliderController@deleteAll');
 	Route::resource('dashboard/slider', 'Backend\SliderController');
 
+	Route::get('dashboard/prioritas/index','Backend\\PrioritasPembangunanController@getIndex');
+	Route::get('dashboard/prioritas/table','Backend\\PrioritasPembangunanController@getIndex');
+	Route::get('dashboard/prioritas/data','Backend\\PrioritasPembangunanController@anyData');
+	Route::post('dashboard/prioritas/deleteall', 'Backend\\PrioritasPembangunanController@deleteAll');
+	Route::resource('dashboard/prioritas', 'Backend\PrioritasPembangunanController');
+
+	Route::get('dashboard/flyer/index','Backend\\FlyerController@getIndex');
+	Route::get('dashboard/flyer/table','Backend\\FlyerController@getIndex');
+	Route::get('dashboard/flyer/data','Backend\\FlyerController@anyData');
+	Route::post('dashboard/flyer/deleteall', 'Backend\\FlyerController@deleteAll');
+	Route::resource('dashboard/flyer', 'Backend\FlyerController');
+
 	Route::get('dashboard/pegawai/index','Backend\PegawaiController@getIndex');
 	Route::get('dashboard/pegawai/table','Backend\PegawaiController@getIndex');
 	Route::get('dashboard/pegawai/data','Backend\PegawaiController@anyData');
@@ -307,6 +328,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard/permohonan-informasi/{id}/send-email', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'sendEmail'])->name('dashboard.permohonan-informasi.send-email');
     Route::delete('dashboard/permohonan-informasi/{id}', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'destroy'])->name('dashboard.permohonan-informasi.destroy');
     Route::post('dashboard/permohonan-informasi/deleteall', [\App\Http\Controllers\Backend\PermohonanInformasiController::class, 'deleteAll'])->name('dashboard.permohonan-informasi.delete-all');
+
+    // Keberatan Informasi (PPID) Backend
+    Route::get('dashboard/keberatan-informasi/index', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'index']);
+    Route::get('dashboard/keberatan-informasi/table', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'index'])->name('dashboard.keberatan-informasi.index');
+    Route::get('dashboard/keberatan-informasi/data', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'anyData'])->name('dashboard.keberatan-informasi.anydata');
+    Route::get('dashboard/keberatan-informasi/{id}', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'show'])->name('dashboard.keberatan-informasi.show');
+    Route::post('dashboard/keberatan-informasi/{id}/update-status', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'updateStatus'])->name('dashboard.keberatan-informasi.update-status');
+    Route::delete('dashboard/keberatan-informasi/{id}', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'destroy'])->name('dashboard.keberatan-informasi.destroy');
+    Route::post('dashboard/keberatan-informasi/deleteall', [\App\Http\Controllers\Backend\KeberatanInformasiController::class, 'deleteAll'])->name('dashboard.keberatan-informasi.delete-all');
+
+    // Statistik Indikator Makro (Sync API Pusdatin)
+    Route::get('dashboard/statistik-makro', [\App\Http\Controllers\Backend\StatistikMakroController::class, 'index'])->name('dashboard.statistik-makro.index');
+    Route::post('dashboard/statistik-makro/sync', [\App\Http\Controllers\Backend\StatistikMakroController::class, 'sync'])->name('dashboard.statistik-makro.sync');
+    Route::post('dashboard/statistik-makro/save-selection', [\App\Http\Controllers\Backend\StatistikMakroController::class, 'saveSelection'])->name('dashboard.statistik-makro.save-selection');
 
     Route::middleware('dishub.access')->group(function () {
         Route::get('dashboard/dishub/{module}/index', 'Backend\\DishubDataController@index');

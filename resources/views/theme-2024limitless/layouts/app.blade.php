@@ -72,11 +72,21 @@
                     },
                     fontFamily: {
                         sans: ['Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                    maxWidth: {
+                        '7xl': '92rem',
                     }
                 }
             }
         }
     </script>
+    <style>
+        @media (min-width: 1280px) {
+            .max-w-7xl {
+                max-width: 92rem !important;
+            }
+        }
+    </style>
     <link href="{{ callassetspath('frontend/theme-2024limitless/app/css/style.css')}}" rel="stylesheet" type="text/css">
     <link href="{{ callassetspath('frontend/theme-2024limitless/app/css/bappeda-redesign.css')}}?v={{ time() }}" rel="stylesheet" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

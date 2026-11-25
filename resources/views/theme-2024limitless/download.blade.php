@@ -32,6 +32,42 @@
         <div class="lg:col-span-8 space-y-4">
             <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
                 
+                <!-- Search Bar Dokumen -->
+                <form action="{{ url('download/' . $seotitle) }}" method="GET" class="mb-5">
+                    <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text"
+                                   name="q"
+                                   value="{{ $q ?? request('q') }}"
+                                   placeholder="Cari judul dokumen atau keterangan pada kategori ini..."
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A56DB] transition">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="submit"
+                                    class="px-5 py-2.5 rounded-xl bg-[#1A56DB] hover:bg-[#1344B5] text-white font-bold text-xs shadow-sm transition border-0 cursor-pointer inline-flex items-center gap-1.5">
+                                <i class="fas fa-search text-[10px]"></i>
+                                <span>Cari</span>
+                            </button>
+                            @if(!empty($q ?? request('q')))
+                                <a href="{{ url('download/' . $seotitle) }}"
+                                   class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition text-decoration-none inline-flex items-center gap-1.5">
+                                    <i class="fas fa-times text-[10px]"></i>
+                                    <span>Reset</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="mt-2 text-[11px] text-slate-500 flex items-center justify-between">
+                        <span>
+                            Menampilkan <strong>{{ $downloads->total() }}</strong> dokumen
+                            @if(!empty($q ?? request('q')))
+                                untuk kata kunci "<strong>{{ $q ?? request('q') }}</strong>"
+                            @endif
+                        </span>
+                    </div>
+                </form>
+
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
                     <table class="w-full text-left text-xs bappeda-doc-table">
                         <thead>

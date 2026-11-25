@@ -25,7 +25,16 @@ class DownloadCategory extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'seotitle', 'active', 'created_by', 'updated_by'];
+    protected $fillable = ['title', 'seotitle', 'active', 'is_perencanaan', 'created_by', 'updated_by'];
+
+    protected $casts = [
+        'is_perencanaan' => 'boolean',
+    ];
+
+    public function downloads()
+    {
+        return $this->hasMany('App\Models\Download', 'download_category_id');
+    }
 
     public function createdBy()
 	{

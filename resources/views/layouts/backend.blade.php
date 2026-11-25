@@ -1528,14 +1528,18 @@
             </div>
 
             <!-- 6. Layanan PPID -->
-            @php $isPpidActive = Request::is('dashboard/permohonan-informasi*'); @endphp
+            @php
+                $isPpidActive = Request::is('dashboard/permohonan-informasi*') || Request::is('dashboard/keberatan-informasi*');
+                $pendingPermohonan = \App\Models\PermohonanInformasi::where('status', 'pending')->count();
+                $pendingKeberatan = \App\Models\KeberatanInformasi::where('status', 'pending')->count();
+                $pendingPpid = $pendingPermohonan + $pendingKeberatan;
+            @endphp
             <div class="menu-dropdown">
                 <button type="button" class="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition duration-150 menu-toggle {{ $isPpidActive ? 'text-white font-bold bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-shield-halved text-sm w-4 text-center"></i>
                         <span>Layanan PPID</span>
                     </div>
-                    @php $pendingPpid = \App\Models\PermohonanInformasi::where('status', 'pending')->count(); @endphp
                     <div class="flex items-center gap-1.5 ml-auto">
                         @if($pendingPpid > 0)
                             <span class="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px]">{{ $pendingPpid }}</span>
@@ -1546,15 +1550,21 @@
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isPpidActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/permohonan-informasi/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/permohonan-informasi*') ? 'text-white font-bold bg-white/10' : '' }}">
                         Permohonan Masuk
-                        @if($pendingPpid > 0)
-                            <span class="ml-1 text-amber-400 font-bold">({{ $pendingPpid }})</span>
+                        @if($pendingPermohonan > 0)
+                            <span class="ml-1 text-amber-400 font-bold">({{ $pendingPermohonan }})</span>
+                        @endif
+                    </a>
+                    <a href="{{ url('/dashboard/keberatan-informasi/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/keberatan-informasi*') ? 'text-white font-bold bg-white/10' : '' }}">
+                        Keberatan Informasi
+                        @if($pendingKeberatan > 0)
+                            <span class="ml-1 text-amber-400 font-bold">({{ $pendingKeberatan }})</span>
                         @endif
                     </a>
                 </div>
             </div>
 
             <!-- 7. Pengaturan Konten -->
-            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/contact*'); @endphp
+            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/prioritas*') || Request::is('dashboard/statistik-makro*') || Request::is('dashboard/flyer*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/contact*'); @endphp
             <div class="menu-dropdown">
                 <button type="button" class="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition duration-150 menu-toggle {{ $isContentActive ? 'text-white font-bold bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                     <div class="flex items-center gap-3">
@@ -1565,6 +1575,9 @@
                 </button>
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isContentActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/slider/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/slider*') ? 'text-white font-bold bg-white/10' : '' }}">Slider Banner</a>
+                    <a href="{{ url('/dashboard/prioritas/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/prioritas*') ? 'text-white font-bold bg-white/10' : '' }}">Prioritas Pembangunan</a>
+                    <a href="{{ url('/dashboard/statistik-makro') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/statistik-makro*') ? 'text-white font-bold bg-white/10' : '' }}">Statistik Indikator Makro</a>
+                    <a href="{{ url('/dashboard/flyer/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/flyer*') ? 'text-white font-bold bg-white/10' : '' }}">Flyer & Ucapan</a>
                     <a href="{{ url('/dashboard/pegawai/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/pegawai*') ? 'text-white font-bold bg-white/10' : '' }}">Data Pejabat & Pegawai</a>
                     <a href="{{ url('/dashboard/contact/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/contact*') ? 'text-white font-bold bg-white/10' : '' }}">Pesan Masuk (Kontak)</a>
                 </div>

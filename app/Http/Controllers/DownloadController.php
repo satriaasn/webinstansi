@@ -26,25 +26,63 @@ class DownloadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($seotitle)
+    public function perencanaan()
     {
+        $categories = DownloadCategory::where('active', 'Y')
+            ->where('is_perencanaan', 1)
+            ->withCount(['downloads' => function ($q) {
+                $q->where('active', 'Y');
+            }])
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return view(getTheme('perencanaan'), compact('categories'));
+    }
+
+    public function index(Request $request, $seotitle)
+    {
+        $q = trim((string) $request->input('q', ''));
+
+        $applySearch = function ($query) use ($q) {
+            if ($q !== '') {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('downloads.title', 'like', '%' . $q . '%')
+                        ->orWhere('downloads.content', 'like', '%' . $q . '%')
+                        ->orWhere('download_categorys.title', 'like', '%' . $q . '%');
+                });
+            }
+            return $query;
+        };
+
 		if ($seotitle == 'all') {
-			$downloads = Download::leftJoin('download_categorys', 'download_categorys.id', '=', 'downloads.download_category_id')
+			$query = Download::leftJoin('download_categorys', 'download_categorys.id', '=', 'downloads.download_category_id')
 				->where('downloads.active', '=', 'Y')
 				->select('downloads.*', 'download_categorys.id as dcid', 'download_categorys.title as dctitle')
-                ->orderByDesc('id')
-				->paginate(20);
+                ->orderByDesc('id');
+            $downloads = $applySearch($query)->paginate(20)->appends(['q' => $q]);
 			$downloadcategorys = DownloadCategory::where('active', '=', 'Y')->first();
-			return view(getTheme('download'), compact('seotitle', 'downloads', 'downloadcategorys'));
+			return view(getTheme('download'), compact('seotitle', 'downloads', 'downloadcategorys', 'q'));
+		} elseif ($seotitle == 'publik') {
+			$query = Download::leftJoin('download_categorys', 'download_categorys.id', '=', 'downloads.download_category_id')
+				->where('downloads.active', '=', 'Y')
+				->where(function ($sub) {
+					$sub->where('download_categorys.is_perencanaan', 0)
+					    ->orWhereNull('download_categorys.is_perencanaan');
+				})
+				->select('downloads.*', 'download_categorys.id as dcid', 'download_categorys.title as dctitle')
+                ->orderByDesc('id');
+            $downloads = $applySearch($query)->paginate(20)->appends(['q' => $q]);
+			$downloadcategorys = (object) ['title' => 'Dokumen Publik Lainnya'];
+			return view(getTheme('download'), compact('seotitle', 'downloads', 'downloadcategorys', 'q'));
 		} else {
 			$downloadcategorys = DownloadCategory::where('seotitle', '=', $seotitle)->first();
 			if ($downloadcategorys) {
-				$downloads = Download::leftJoin('download_categorys', 'download_categorys.id', '=', 'downloads.download_category_id')
+				$query = Download::leftJoin('download_categorys', 'download_categorys.id', '=', 'downloads.download_category_id')
 					->where([['downloads.download_category_id', '=', $downloadcategorys->id],['downloads.active', '=', 'Y']])
 					->select('downloads.*', 'download_categorys.id as dcid', 'download_categorys.title as dctitle')
-                    ->orderByDesc('id')
-					->paginate(20);
-				return view(getTheme('download'), compact('seotitle', 'downloads', 'downloadcategorys'));
+                    ->orderByDesc('id');
+                $downloads = $applySearch($query)->paginate(20)->appends(['q' => $q]);
+				return view(getTheme('download'), compact('seotitle', 'downloads', 'downloadcategorys', 'q'));
 			} else {
 				return redirect('download/all');
 			}

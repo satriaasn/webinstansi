@@ -88,6 +88,11 @@
                 <div class="text-[10px] text-white/70">
                     &copy; {{ date('Y') }} Bappeda Provinsi Lampung. All Rights Reserved.
                 </div>
+                <div class="text-[10px] text-blue-100/90 font-medium flex items-center lg:justify-end gap-1 mt-0.5">
+                    <span>Dibuat dengan</span>
+                    <i class="fas fa-heart text-rose-400 animate-pulse"></i>
+                    <span>oleh Bappeda</span>
+                </div>
             </div>
 
         </div>

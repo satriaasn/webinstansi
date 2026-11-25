@@ -64,6 +64,14 @@
             @endif
             <div class="row form-group">
                 <div class="col-md-12">
+                    <label class="d-flex align-items-center" style="gap: 8px; cursor: pointer; font-weight: 500;">
+                        <input type="checkbox" name="is_perencanaan" value="1" {{ old('is_perencanaan', $downloadcategory->is_perencanaan) ? 'checked' : '' }} style="width: 16px; height: 16px;">
+                        <span><strong>Dokumen Perencanaan</strong> <small class="text-muted">(Jika dicentang, kategori ini akan tampil sebagai card di menu Perencanaan Pembangunan)</small></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
                     <hr/>
                     {!! Form::submit('Update', ['class' => 'btn btn-success pull-right']) !!}
                 </div>

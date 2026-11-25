@@ -66,6 +66,12 @@ class DownloadCategoryController extends Controller
 				</div>';
 				return $check;
 			})
+			->editColumn('title', function ($downloadcategory) {
+				$badge = $downloadcategory->is_perencanaan
+					? ' <span class="badge badge-info" style="font-size:10px;margin-left:6px;">Dokumen Perencanaan</span>'
+					: '';
+				return e($downloadcategory->title) . $badge;
+			})
 			->addColumn('active', function ($downloadcategory) {
 				return $downloadcategory->active == 'Y' ? 'Active' : 'Non Active';
 			})
@@ -118,6 +124,7 @@ class DownloadCategoryController extends Controller
 				'updated_by' => Auth::User()->id
 			]);
 			$requestData = $request->all();
+			$requestData['is_perencanaan'] = $request->has('is_perencanaan') ? 1 : 0;
 
 			DownloadCategory::create($requestData);
 
@@ -187,6 +194,7 @@ class DownloadCategoryController extends Controller
 				'updated_by' => Auth::User()->id
 			]);
 			$requestData = $request->all();
+			$requestData['is_perencanaan'] = $request->has('is_perencanaan') ? 1 : 0;
 
 			$downloadcategory = DownloadCategory::findOrFail($ids[0]);
 			$downloadcategory->update($requestData);
