@@ -14,7 +14,15 @@ class StatistikMakroApiService
         $verifySsl = (bool) config('services.agenda.verify_ssl', false);
         $apiKey = config('services.agenda.api_key');
 
-        $client = Http::withOptions(['verify' => $verifySsl])->timeout(25);
+        $options = [
+            'verify' => $verifySsl,
+            'connect_timeout' => 20,
+        ];
+        if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
+            $options['curl'] = [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4];
+        }
+
+        $client = Http::withOptions($options)->timeout(45)->retry(2, 500, null, false);
         if (!empty($apiKey)) {
             $client = $client->withHeaders(['X-API-Key' => $apiKey]);
         }
