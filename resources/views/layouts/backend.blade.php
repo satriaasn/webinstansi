@@ -1628,7 +1628,7 @@
             </div>
 
             <!-- 10. Pengaturan Sistem -->
-            @php $isSettingActive = Request::is('dashboard/settings*') || Request::is('dashboard/theme*'); @endphp
+            @php $isSettingActive = Request::is('dashboard/settings*') || Request::is('dashboard/theme*') || Request::is('dashboard/image-optimize*'); @endphp
             <div class="menu-dropdown">
                 <button type="button" class="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition duration-150 menu-toggle {{ $isSettingActive ? 'text-white font-bold bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                     <div class="flex items-center gap-3">
@@ -1639,6 +1639,9 @@
                 </button>
                 <div class="submenu pl-8 pr-2 py-1 space-y-1 {{ $isSettingActive ? '' : 'hidden' }}">
                     <a href="{{ url('/dashboard/settings') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/settings*') ? 'text-white font-bold bg-white/10' : '' }}">Pengaturan Umum (Logo & Kontak)</a>
+                    @if(Auth::check() && (optional(Auth::user())->hasRole('superadmin') || optional(Auth::user())->hasRole('admin')))
+                        <a href="{{ route('dashboard.image_optimize') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/image-optimize*') ? 'text-white font-bold bg-white/10' : '' }}">Optimasi Gambar (WebP)</a>
+                    @endif
                     @if(Auth::check() && optional(Auth::user())->hasRole('superadmin'))
                         <a href="{{ url('/dashboard/theme/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/theme*') ? 'text-white font-bold bg-white/10' : '' }}">Tema Tampilan</a>
                     @endif

@@ -173,6 +173,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('dashboard/settings/deleteall', 'Backend\\SettingsController@deleteAll');
 	Route::resource('dashboard/settings', 'Backend\SettingsController');
 
+	Route::get('dashboard/image-optimize', 'Backend\ImageOptimizeController@index')->name('dashboard.image_optimize');
+	Route::get('dashboard/image-optimize/stats', 'Backend\ImageOptimizeController@stats')->name('dashboard.image_optimize.stats');
+	Route::post('dashboard/image-optimize/process', 'Backend\ImageOptimizeController@processBatch')->name('dashboard.image_optimize.process');
+
 	// Route::get('dashboard/generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@getGenerator']);
 	// Route::post('dashboard/generator', ['uses' => '\Appzcoder\LaravelAdmin\Controllers\ProcessController@postGenerator']);
 
