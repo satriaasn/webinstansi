@@ -93,9 +93,9 @@
 <body class="font-sans antialiased bg-[#061C3D] text-slate-800 overflow-x-hidden">
 
     <div class="relative min-h-screen w-full flex flex-col items-center justify-center px-4 py-10 overflow-hidden">
-        <!-- Animated Background Photo (Lampung Landmark / Bappeda) -->
+        <!-- Animated Background Photo (Lampung Landmark) -->
         <div class="absolute inset-0 z-0 overflow-hidden">
-            <img src="{{ file_exists(public_path('assets/images/hero_lampung_new.jpg')) ? asset('assets/images/hero_lampung_new.jpg') : asset('assets/images/gedung_bappeda.jpg') }}"
+            <img src="{{ asset('assets/images/hero_lampung_new.jpg') }}"
                  alt="Lampung Background"
                  class="w-full h-full object-cover animate-ken-burns opacity-75">
             <!-- Blue Gradient Overlay matching reference theme -->
