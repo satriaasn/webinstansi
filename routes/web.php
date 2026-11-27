@@ -18,6 +18,30 @@ Route::get('/berkas/{slashData?}', [\App\Http\Controllers\FileController::class,
 Route::get('/call-file/{slashData?}', [\App\Http\Controllers\FileController::class, 'callFile'])->where('slashData', '(.*)');
 Route::get('/call-css/{slashData?}', [\App\Http\Controllers\FileController::class, 'callcssFile'])->where('slashData', '(.*)');
 Route::get('/call-js/{slashData?}', [\App\Http\Controllers\FileController::class, 'calljsFile'])->where('slashData', '(.*)');
+Route::get('/assets/{slashData}', function ($slashData) {
+    $clean = str_replace(['..', "\0"], '', $slashData);
+    $path = base_path('assets/' . $clean);
+    if (!is_file($path)) {
+        abort(404);
+    }
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    $mimeTypes = [
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'png' => 'image/png',
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'svg' => 'image/svg+xml',
+        'woff' => 'font/woff',
+        'woff2' => 'font/woff2',
+        'ttf' => 'font/ttf',
+        'eot' => 'application/vnd.ms-fontobject',
+        'map' => 'application/json',
+    ];
+    $mime = $mimeTypes[$ext] ?? (function_exists('mime_content_type') ? mime_content_type($path) : 'application/octet-stream');
+    return response()->file($path, ['Content-Type' => $mime]);
+})->where('slashData', '.*');
 // Route::get('api_event','EventController@api_event');
 Route::middleware(['log.visitor'])->group(function () {
     Route::get('/', 'HomeController@index');

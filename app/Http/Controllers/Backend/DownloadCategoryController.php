@@ -72,9 +72,17 @@ class DownloadCategoryController extends Controller
 					: '';
 				return e($downloadcategory->title) . $badge;
 			})
-			->addColumn('active', function ($downloadcategory) {
-				return $downloadcategory->active == 'Y' ? 'Active' : 'Non Active';
-			})
+			->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('download_categorys.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('download_categorys.active', 'Y');
+                }
+            })
             ->addColumn('action', function ($downloadcategory) {
 				$btn = '<div style="text-align:center;">';
 				$btn .= '<a href="'.url('dashboard/download-category/'.Hashids::encode($downloadcategory->id).'').'" class="btn btn-secondary btn-sm" title="View"><span class="fa fa-eye" aria-hidden="true"/></a> ';

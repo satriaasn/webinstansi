@@ -69,8 +69,16 @@ class DownloadController extends Controller
 				</div>';
                 return $check;
             })
-            ->addColumn('active', function ($download) {
-                return $download->active == 'Y' ? 'Active' : 'Non Active';
+            ->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('downloads.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('downloads.active', 'Y');
+                }
             })
             ->addColumn('action', function ($download) {
                 $btn = '<div style="text-align:center;">';

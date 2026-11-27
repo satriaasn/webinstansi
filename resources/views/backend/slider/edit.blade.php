@@ -61,8 +61,11 @@
                     {!! $errors->first('content', '<p class="help-block text-danger">:message</p>') !!}
                 </div>
             </div>
-            <div class="row form-group {{ $errors->has('file') ? 'has-error' : ''}}">
+            <div class="row form-group {{ $errors->has('picture') ? 'has-error' : ''}}">
                 {!! Form::label('picture', 'Change Picture', ['class' => 'col-md-12 control-label']) !!}
+                <div class="col-md-12 mb-2">
+                    @include('backend.partials.image_preview', ['file' => $slider->picture, 'alt' => $slider->title, 'maxHeight' => '180px'])
+                </div>
                 <div class="col-md-12">
                     <input type="file" name="picture" id="picture" accept="image/*">
                 </div>
@@ -73,10 +76,8 @@
                     {!! Form::label('active', 'Active', ['class' => 'col-md-12 control-label']) !!}
                     <div class="col-md-12">
                         <select class="form-control select2" name="active" required>
-                            <option value="{{ $slider->active }}">
-                                Selected {{ $slider->active == 'Y' ? 'Active' : 'Non Active' }}</option>
-                            <option value="Y">Active</option>
-                            <option value="N">Non Active</option>
+                            <option value="Y" {{ $slider->active == 'Y' ? 'selected' : '' }}>Active</option>
+                            <option value="N" {{ $slider->active == 'N' ? 'selected' : '' }}>Non Active</option>
                         </select>
                         {!! $errors->first('active', '<p class="help-block text-danger">:message</p>') !!}
                     </div>

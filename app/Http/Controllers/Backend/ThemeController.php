@@ -62,9 +62,17 @@ class ThemeController extends Controller
 			->addColumn('picture', function ($theme) {
 				return '<div style="width:80px; text-align:center;"><img class="img-fluid img-thumbnail" src="'.berkas($theme->picture).'" width="80"></div>';
 			})
-			->addColumn('active', function ($theme) {
-				return $theme->active == 'Y' ? 'Active' : 'Non Active';
-			})
+			->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('themes.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('themes.active', 'Y');
+                }
+            })
             ->addColumn('action', function ($theme) {
 				$btn = '<div style="text-align:center;">';
 				$btn .= '<a href="javascript:void(0);" class="btn btn-success btn-sm btn-active" id="'.Hashids::encode($theme->id).'" title="Active"><span class="fa fa-eye" aria-hidden="true"></span> Active</a> ';

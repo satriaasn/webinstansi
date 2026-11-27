@@ -5,51 +5,29 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="{{ url('dashboard') }}">Dashboard</a>
-            <a class="breadcrumb-item" href="{{ url('dashboard/slider') }}">Slider</a>
-            <span class="breadcrumb-item active">View Slider</span>
+            <a class="breadcrumb-item" href="{{ url('dashboard/slider/table') }}">Slider</a>
+            <span class="breadcrumb-item active">Preview Slider</span>
         </nav>
     </div>
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
-            <div class="mg-b-40">
-                <div class="card-options">
-                    <a href="{{ url('dashboard/slider/table') }}" class="btn btn-secondary btn-sm" title="Back"><i
-                            class="fa fa-reply"></i> Back</a>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <th> Title</th>
-                        <td> {{ $slider->title }} </td>
-                    </tr>
-                    <tr>
-                        <th> Seotitle</th>
-                        <td> {{ $slider->seotitle }} </td>
-                    </tr>
-                    <tr>
-                        <th> Content</th>
-                        <td> {{ $slider->content }} </td>
-                    </tr>
-                    <tr>
-                        <th> Url</th>
-                        <td> {{ $slider->url }} </td>
-                    </tr>
-                    <tr>
-                        <th> Picture</th>
-                        <td><a href="{{ berkas( $slider->picture) }}"
-                               id="quickview">{{ $slider->picture }}</a></td>
-                    </tr>
-                    <tr>
-                        <th> Active</th>
-                        <td> {{ $slider->active == 'Y' ? 'Active' : 'Non Active' }} </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            @include('backend.partials.preview_layout', [
+                'title' => $slider->title ?: 'Slider #' . $slider->id,
+                'subtitle' => $slider->seotitle ? 'Slug: ' . $slider->seotitle : null,
+                'active' => $slider->active,
+                'badgeText' => 'Slider Banner',
+                'backUrl' => url('dashboard/slider/table'),
+                'editUrl' => url('dashboard/slider/' . Hashids::encode($slider->id) . '/edit'),
+                'image' => $slider->picture,
+                'fields' => [
+                    ['label' => 'Judul Slider', 'value' => $slider->title],
+                    ['label' => 'Seotitle', 'value' => $slider->seotitle],
+                    ['label' => 'Link URL Tujuan', 'value' => $slider->url, 'url' => $slider->url],
+                ],
+                'htmlContent' => $slider->content,
+                'contentTitle' => 'Teks / Keterangan Slider',
+            ])
         </div>
     </div>
 @endsection

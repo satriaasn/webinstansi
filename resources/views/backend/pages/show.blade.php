@@ -5,56 +5,28 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="{{ url('dashboard') }}">Dashboard</a>
-            <a class="breadcrumb-item" href="{{ url('dashboard/pages') }}">Pages</a>
-            <span class="breadcrumb-item active">View Pages</span>
+            <a class="breadcrumb-item" href="{{ url('dashboard/pages/table') }}">Pages</a>
+            <span class="breadcrumb-item active">Preview Pages</span>
         </nav>
     </div>
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
-            <div class="mg-b-40">
-                <div class="card-options">
-                    <a href="{{ url('dashboard/pages/table') }}" class="btn btn-secondary btn-sm" title="Back"><i
-                            class="fa fa-reply"></i> Back</a>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <th> Title</th>
-                        <td> {{ $pages->title }} </td>
-                    </tr>
-                    <tr>
-                        <th> Seotitle</th>
-                        <td> {{ $pages->seotitle }} </td>
-                    </tr>
-                    <tr>
-                        <th> Content</th>
-                        <td> {!! $pages->content !!} </td>
-                    </tr>
-                    <tr>
-                        <th> Picture</th>
-                        <td>
-                            @if(!empty($pages->picture))
-                                @php $adminPageImg = berkas($pages->picture) ?: url('berkas/' . $pages->picture); @endphp
-                                <div class="mb-2">
-                                    <img src="{{ $adminPageImg }}" alt="{{ $pages->title }}" style="max-height:240px; border-radius:8px; object-fit:contain;">
-                                </div>
-                                <a href="{{ $adminPageImg }}" target="_blank" id="quickview">{{ $pages->picture }}</a>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th> Active</th>
-                        <td> {{ $pages->active == 'Y' ? 'Active' : 'Non Active' }} </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            @include('backend.partials.preview_layout', [
+                'title' => $pages->title,
+                'subtitle' => 'Slug: ' . $pages->seotitle,
+                'active' => $pages->active,
+                'badgeText' => 'Halaman Statis',
+                'backUrl' => url('dashboard/pages/table'),
+                'editUrl' => url('dashboard/pages/' . Hashids::encode($pages->id) . '/edit'),
+                'image' => $pages->picture,
+                'fields' => [
+                    ['label' => 'Judul Halaman', 'value' => $pages->title],
+                    ['label' => 'Seotitle', 'value' => $pages->seotitle],
+                ],
+                'htmlContent' => $pages->content,
+                'contentTitle' => 'Konten Halaman',
+            ])
         </div>
     </div>
 @endsection

@@ -63,9 +63,17 @@ class PegawaiController extends Controller
 			->addColumn('nama_pegawai', function ($pegawai) {
 				return '<strong>' . $pegawai->nip . '</strong><br />' . $pegawai->nama_pegawai;
 			})
-            ->addColumn('active', function ($pegawai) {
-				return $pegawai->active == 'Y' ? 'Active' : 'Non Active';
-			})
+            ->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('pegawais.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('pegawais.active', 'Y');
+                }
+            })
             ->addColumn('action', function ($pegawai) {
 				$btn = '<div style="text-align:center;">';
 				$btn .= '<a href="'.url('dashboard/pegawai/'.Hashids::encode($pegawai->id).'').'" class="btn btn-secondary btn-sm" title="View"><span class="fa fa-eye" aria-hidden="true"/></a> ';
@@ -113,7 +121,7 @@ class PegawaiController extends Controller
 				'nama_pegawai' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -122,10 +130,7 @@ class PegawaiController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
 			Pegawai::create($requestData);
@@ -196,7 +201,7 @@ class PegawaiController extends Controller
 				'active' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -204,10 +209,7 @@ class PegawaiController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
            
 			$pegawai = Pegawai::findOrFail($ids[0]);

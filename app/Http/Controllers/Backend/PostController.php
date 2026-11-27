@@ -72,8 +72,16 @@ class PostController extends Controller
             ->addColumn('headline', function ($post) {
                 return $post->headline == 'Y' ? 'Headline' : 'Non Headline';
             })
-            ->addColumn('active', function ($post) {
-                return $post->active == 'Y' ? 'Active' : 'Non Active';
+            ->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('posts.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('posts.active', 'Y');
+                }
             })
             ->addColumn('action', function ($post) {
                 $btn = '<div style="text-align:center;">';
@@ -125,7 +133,7 @@ class PostController extends Controller
                 'content' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -134,10 +142,7 @@ class PostController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
             $post = Post::create($requestData);
             Session::flash('flash_message', 'Post added!');
@@ -222,7 +227,7 @@ class PostController extends Controller
                 'content' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -230,10 +235,7 @@ class PostController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             $post = Post::findOrFail($ids[0]);

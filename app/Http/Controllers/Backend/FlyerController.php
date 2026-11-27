@@ -57,7 +57,15 @@ class FlyerController extends Controller
                 return '<img src="' . e($src) . '" alt="" style="height:40px;border-radius:6px;object-fit:cover;">';
             })
             ->addColumn('active', function ($item) {
-                return $item->active == 'Y' ? 'Active' : 'Non Active';
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('flyers.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('flyers.active', 'Y');
+                }
             })
             ->addColumn('action', function ($item) {
                 $hashId = Hashids::encode($item->id);
@@ -91,7 +99,7 @@ class FlyerController extends Controller
 
         $this->validate($request, [
             'title' => 'required|string|max:255',
-            'picture' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+            'picture' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'url' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'active' => 'required|in:Y,N',
@@ -99,12 +107,7 @@ class FlyerController extends Controller
 
         $hashImage = '';
         if ($request->hasFile('picture')) {
-            $image = $request->file('picture');
-            $hashImage = $image->hashName();
-            Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-            if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-            }
+            $hashImage = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
         }
 
         Flyer::create([
@@ -154,7 +157,7 @@ class FlyerController extends Controller
 
         $this->validate($request, [
             'title' => 'required|string|max:255',
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'url' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'active' => 'required|in:Y,N',
@@ -169,13 +172,7 @@ class FlyerController extends Controller
         ];
 
         if ($request->hasFile('picture')) {
-            $image = $request->file('picture');
-            $hashImage = $image->hashName();
-            Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-            if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-            }
-            $data['picture'] = $hashImage;
+            $data['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
         }
 
         $flyer->update($data);

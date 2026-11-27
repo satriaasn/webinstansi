@@ -53,7 +53,7 @@
                 responsive: true,
                 ajax: '{{ url("dashboard/post-accommodation/data") }}',
                 autoWidth: false,
-                order: [[0, 'desc']],
+                order: [[0, 'asc']],
                 columns: [
                     {data: 'id', name: 'posts.id'},
                     {data: 'cat_title', name: 'post_categorys.title'},

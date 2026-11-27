@@ -11,13 +11,31 @@
      1. HERO SLIDER BANNER SECTION (Matching Mockup & Database Sliders)
      ======================================================================== -->
 @php
-    $heroSlider = \App\Models\Slider::where('active', 'Y')->orderBy('id', 'desc')->first() ?: ((isset($sliders) && $sliders->count() > 0) ? $sliders->first() : null);
-    $sliderImg = ($heroSlider && $heroSlider->picture) 
-        ? (berkas($heroSlider->picture) ?: url('berkas/' . $heroSlider->picture)) 
-        : url('berkas/PoqFOYIvER46x4p7bSVwnCiLubDYnfFuZalqSPYt.png');
+    $activeSliders = \App\Models\Slider::where('active', 'Y')->orderBy('id', 'desc')->get()
+        ->filter(fn($s) => !empty($s->picture) && berkas($s->picture))
+        ->values();
+    if ($activeSliders->isEmpty()) {
+        $fallbackImg = file_exists(public_path('assets/images/hero_lampung_new.jpg'))
+            ? asset('assets/images/hero_lampung_new.jpg')
+            : asset('assets/images/gedung_bappeda.jpg');
+        $heroSlides = collect([[
+            'img' => $fallbackImg,
+            'title' => 'Bersama Mewujudkan Lampung Maju 2030',
+            'content' => '"Melalui perencanaan pembangunan yang adaptif, kolaboratif dan berkelanjutan untuk kesejahteraan masyarakat Lampung."',
+            'url' => '#perencanaan',
+        ]]);
+    } else {
+        $heroSlides = $activeSliders->map(fn($s) => [
+            'img' => berkas($s->picture),
+            'title' => !empty($s->title) ? $s->title : 'Bersama Mewujudkan Lampung Maju 2030',
+            'content' => !empty($s->content) ? strip_tags($s->content) : '"Melalui perencanaan pembangunan yang adaptif, kolaboratif dan berkelanjutan untuk kesejahteraan masyarakat Lampung."',
+            'url' => !empty($s->url) ? $s->url : '#perencanaan',
+        ]);
+    }
+    $firstSlide = $heroSlides->first();
 @endphp
-<section class="relative bg-cover bg-center min-h-[500px] lg:min-h-[560px] flex items-center py-16 md:py-20 font-sans overflow-hidden" 
-         style="background-image: url('{{ $sliderImg }}');">
+<section id="hero-slider-section" class="relative bg-cover bg-center min-h-[500px] lg:min-h-[560px] flex items-center py-16 md:py-20 font-sans overflow-hidden transition-all duration-700"
+         style="background-image: url('{{ $firstSlide['img'] }}');">
     <!-- Dark gradient overlay on left for sharp readable text contrast -->
     <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/65 to-transparent"></div>
 
@@ -29,44 +47,68 @@
             </div>
 
             <!-- Big Main Headline -->
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.15] tracking-tight mb-3">
-                @if($heroSlider && !empty($heroSlider->title))
-                    {{ $heroSlider->title }}
-                @else
-                    Bersama Mewujudkan<br>
-                    <span class="text-white">Lampung Maju 2030</span>
-                @endif
+            <h1 id="hero-slide-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.15] tracking-tight mb-3">
+                {{ $firstSlide['title'] }}
             </h1>
 
             <!-- Subtitle Description -->
-            <p class="text-blue-50/95 text-xs sm:text-sm leading-relaxed mb-6 max-w-xl italic font-light">
-                {{ ($heroSlider && !empty($heroSlider->content)) ? strip_tags($heroSlider->content) : '"Melalui perencanaan pembangunan yang adaptif, kolaboratif dan berkelanjutan untuk kesejahteraan masyarakat Lampung."' }}
+            <p id="hero-slide-content" class="text-blue-50/95 text-xs sm:text-sm leading-relaxed mb-6 max-w-xl italic font-light">
+                {{ $firstSlide['content'] }}
             </p>
 
             <!-- CTA Button -->
             <div>
-                <a href="{{ ($heroSlider && !empty($heroSlider->url)) ? $heroSlider->url : '#perencanaan' }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#F59E0B] hover:bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 text-decoration-none">
+                <a id="hero-slide-url" href="{{ $firstSlide['url'] }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#F59E0B] hover:bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition transform hover:-translate-y-0.5 text-decoration-none">
                     <span>Selengkapnya</span>
                     <i class="fas fa-arrow-right text-[10px]"></i>
                 </a>
             </div>
 
             <!-- Carousel dots / indicators -->
-            <div class="flex items-center gap-2 text-white/80 mt-10 text-xs">
-                <button type="button" class="w-6 h-6 rounded-full bg-white/10 hover:bg-white/30 text-white flex items-center justify-center text-[10px] transition">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-white/40"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-white/40"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-white/40"></span>
-                <button type="button" class="w-6 h-6 rounded-full bg-white/10 hover:bg-white/30 text-white flex items-center justify-center text-[10px] transition">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
+            @if($heroSlides->count() > 1)
+                <div class="flex items-center gap-2 text-white/80 mt-10 text-xs">
+                    <button type="button" onclick="heroSlidePrev()" class="w-7 h-7 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-[10px] transition">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    @foreach($heroSlides as $idx => $s)
+                        <button type="button" onclick="goHeroSlide({{ $idx }})" class="hero-dot w-2.5 h-2.5 rounded-full transition {{ $idx === 0 ? 'bg-[#F59E0B] w-5' : 'bg-white/40 hover:bg-white/70' }}"></button>
+                    @endforeach
+                    <button type="button" onclick="heroSlideNext()" class="w-7 h-7 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-[10px] transition">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            @endif
         </div>
     </div>
 </section>
+@if($heroSlides->count() > 1)
+<script>
+    (function() {
+        var slides = @json($heroSlides->values());
+        var current = 0;
+        var section = document.getElementById('hero-slider-section');
+        var titleEl = document.getElementById('hero-slide-title');
+        var contentEl = document.getElementById('hero-slide-content');
+        var urlEl = document.getElementById('hero-slide-url');
+        var dots = document.querySelectorAll('.hero-dot');
+
+        window.goHeroSlide = function(idx) {
+            current = (idx + slides.length) % slides.length;
+            var s = slides[current];
+            section.style.backgroundImage = "url('" + s.img + "')";
+            titleEl.textContent = s.title;
+            contentEl.textContent = s.content;
+            urlEl.setAttribute('href', s.url);
+            dots.forEach(function(d, i) {
+                d.className = 'hero-dot h-2.5 rounded-full transition ' + (i === current ? 'bg-[#F59E0B] w-5' : 'bg-white/40 hover:bg-white/70 w-2.5');
+            });
+        };
+        window.heroSlideNext = function() { window.goHeroSlide(current + 1); };
+        window.heroSlidePrev = function() { window.goHeroSlide(current - 1); };
+        setInterval(function() { window.heroSlideNext(); }, 6000);
+    })();
+</script>
+@endif
 
 <!-- ========================================================================
      2. FLOATING QUICK ACCESS CARDS (6 Cards Row - High Contrast Icons)

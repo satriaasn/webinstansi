@@ -128,7 +128,7 @@ class HomeController extends Controller
             $galleryPosts = Cache::remember('home_gallery_5', 3600, function () {
                 return self::gallery(5);
             });
-        } else {
+        } elseif (strtolower($themeFolder) !== 'theme-2024limitless') {
             $posts_page = Post::leftJoin('users', 'users.id', 'posts.created_by')
                 ->leftJoin('post_categorys', 'post_categorys.id', 'posts.post_category_id')
                 ->where([['posts.active', '=', 'Y']])

@@ -37,9 +37,8 @@
                 {!! Form::label('post_category_id', 'Category', ['class' => 'col-md-12 control-label required']) !!}
                 <div class="col-md-12">
                     <select class="form-control select2" name="post_category_id" required>
-                        <option value="{{ $post->post_category_id }}">Selected {{ $post->postCategory->title }}</option>
                         @foreach($post_categorys as $category)
-                            <option value="{{ $category->id }}">{{ $category->title }}</option>
+                            <option value="{{ $category->id }}" {{ $post->post_category_id == $category->id ? 'selected' : '' }}>{{ $category->title }}</option>
                         @endforeach
                     </select>
                     {!! $errors->first('post_category_id', '<p class="help-block text-danger">:message</p>') !!}
@@ -73,8 +72,11 @@
                     {!! $errors->first('tag', '<p class="help-block text-danger">:message</p>') !!}
                 </div>
             </div>
-            <div class="row form-group {{ $errors->has('file') ? 'has-error' : ''}}">
+            <div class="row form-group {{ $errors->has('picture') ? 'has-error' : ''}}">
                 {!! Form::label('picture', 'Change Picture', ['class' => 'col-md-12 control-label']) !!}
+                <div class="col-md-12 mb-2">
+                    @include('backend.partials.image_preview', ['file' => $post->picture, 'alt' => $post->title, 'maxHeight' => '180px'])
+                </div>
                 <div class="col-md-12">
                     <input type="file" name="picture" id="picture" accept="image/*">
                 </div>
@@ -84,10 +86,8 @@
                 {!! Form::label('headline', 'Headline', ['class' => 'col-md-12 control-label']) !!}
                 <div class="col-md-12">
                     <select class="form-control select2" name="headline" required>
-                        <option value="{{ $post->headline }}">
-                            Selected {{ $post->headline == 'Y' ? 'Headline' : 'Non Headline' }}</option>
-                        <option value="Y">Headline</option>
-                        <option value="N">Non Headline</option>
+                        <option value="Y" {{ $post->headline == 'Y' ? 'selected' : '' }}>Headline</option>
+                        <option value="N" {{ $post->headline == 'N' ? 'selected' : '' }}>Non Headline</option>
                     </select>
                     {!! $errors->first('headline', '<p class="help-block text-danger">:message</p>') !!}
                 </div>
@@ -97,10 +97,8 @@
                     {!! Form::label('active', 'Active', ['class' => 'col-md-12 control-label']) !!}
                     <div class="col-md-12">
                         <select class="form-control select2" name="active" required>
-                            <option value="{{ $post->active }}">
-                                Selected {{ $post->active == 'Y' ? 'Active' : 'Non Active' }}</option>
-                            <option value="Y">Active</option>
-                            <option value="N">Non Active</option>
+                            <option value="Y" {{ $post->active == 'Y' ? 'selected' : '' }}>Active</option>
+                            <option value="N" {{ $post->active == 'N' ? 'selected' : '' }}>Non Active</option>
                         </select>
                         {!! $errors->first('active', '<p class="help-block text-danger">:message</p>') !!}
                     </div>

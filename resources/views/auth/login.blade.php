@@ -131,8 +131,9 @@
 
                 <!-- Logo & Brand Header -->
                 <div class="flex items-center justify-center gap-3.5 mb-5">
-                    <img src="{{ file_exists(public_path('assets/images/logo_lampung.png')) ? asset('assets/images/logo_lampung.png') : (berkas(getSetting('logo')) ?: asset('assets/images/logo_lampung.png')) }}"
-                         alt="Logo Provinsi Lampung"
+                    <img src="{{ berkas(getSetting('logo')) ?: asset('assets/images/logo_lampung.png') }}"
+                         alt="{{ getSetting('web_name') ?: 'Logo Provinsi Lampung' }}"
+                         onerror="this.onerror=null;this.src='{{ asset('assets/images/logo_lampung.png') }}'"
                          class="h-14 w-auto drop-shadow-sm transition-transform duration-300 hover:scale-105">
                     <div class="text-left">
                         <div class="text-xl font-black text-[#0B2545] tracking-wider leading-none">BAPPEDA</div>

@@ -55,7 +55,7 @@
                 },
                 ajax: '{{ url("dashboard/theme/data") }}',
                 autoWidth: false,
-                order: [[0, 'desc']],
+                order: [[0, 'asc']],
                 columnDefs: [{
                     className: 'control',
                     orderable: false,

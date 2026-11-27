@@ -19,10 +19,18 @@
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
-            <div class="mg-b-40">
+            <div class="mg-b-20 d-flex justify-content-between align-items-center flex-wrap" style="gap: 10px;">
                 <div class="card-options">
                     <a href="{{ url('dashboard/slider/create') }}" class="btn btn-success btn-sm"
                        title="Add New Slider"><i class="fa fa-plus"></i> Add <span class="hidden-xs-down">New</span></a>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 8px;">
+                    <label for="filter-active" class="mb-0 tx-12 font-weight-bold text-secondary">Filter Status:</label>
+                    <select id="filter-active" class="form-control form-control-sm" style="width: 160px;">
+                        <option value="">Semua Status</option>
+                        <option value="Y">Active</option>
+                        <option value="N">Non Active</option>
+                    </select>
                 </div>
             </div>
 
@@ -73,9 +81,14 @@
                         target: -1
                     }
                 },
-                ajax: '{{ url("dashboard/slider/data") }}',
+                ajax: {
+                    url: '{{ url("dashboard/slider/data") }}',
+                    data: function (d) {
+                        d.active = $('#filter-active').val();
+                    }
+                },
                 autoWidth: false,
-                order: [[1, 'desc']],
+                order: [[1, 'asc']],
                 columnDefs: [{
                     targets: 'no-sort',
                     orderable: false
@@ -135,6 +148,10 @@
                     sSearch: '',
                     lengthMenu: '_MENU_ items/page',
                 }
+            });
+
+            $('#filter-active').on('change', function () {
+                table.ajax.reload();
             });
 
             $('.dataTables_length select').select2({minimumResultsForSearch: Infinity});

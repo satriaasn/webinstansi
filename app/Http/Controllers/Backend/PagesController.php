@@ -70,8 +70,16 @@ class PagesController extends Controller
 				</div>';
                 return $check;
             })
-            ->addColumn('active', function ($pages) {
-                return $pages->active == 'Y' ? 'Active' : 'Non Active';
+            ->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('pages.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('pages.active', 'Y');
+                }
             })
             ->addColumn('action', function ($pages) {
                 $btn = '<div style="text-align:center;">';
@@ -120,7 +128,7 @@ class PagesController extends Controller
                 'seotitle' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -129,13 +137,7 @@ class PagesController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                }
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
             Pages::create($requestData);
             Cache::forget('page_detail_' . ($requestData['seotitle'] ?? ''));
@@ -204,7 +206,7 @@ class PagesController extends Controller
                 'seotitle' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -212,13 +214,7 @@ class PagesController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                }
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
             $pages = Pages::findOrFail($ids[0]);
             $oldSeo = $pages->seotitle;

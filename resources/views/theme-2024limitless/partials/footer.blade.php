@@ -25,9 +25,8 @@
                 <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-white mt-0.5">
                     <i class="fas fa-location-dot text-xs"></i>
                 </div>
-                <div class="text-white text-xs leading-snug">
-                    <div class="font-medium">Jl. Basuki Rahmat No. 86</div>
-                    <div class="text-white/80">Bandar Lampung, 35214</div>
+                <div class="text-white text-xs leading-snug max-w-[240px]">
+                    <div class="font-medium">{{ getSetting('address') ?: 'Jl. Wolter Monginsidi No.223 Teluk Betung-Bandar Lampung' }}</div>
                 </div>
             </div>
 

@@ -71,9 +71,17 @@ class UsersController extends Controller
 				</div>';
 				return $check;
 			})
-			->addColumn('active', function ($user) {
-				return $user->active == 1 ? 'Active' : 'Non Active';
-			})
+			->addColumn('active', function ($item) {
+                return $item->active == 1 ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('users.active', 0);
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('users.active', 1);
+                }
+            })
             ->addColumn('action', function ($user) {
 				$btn = '<div style="text-align:center;">';
 				$btn = '<a href="'.url('dashboard/users/'.Hashids::encode($user->id).'').'" class="btn btn-secondary btn-sm" title="View"><span class="fa fa-eye" aria-hidden="true"/></a> ';
@@ -131,7 +139,7 @@ class UsersController extends Controller
                 'roles' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -144,10 +152,7 @@ class UsersController extends Controller
 
             $pictureuser = null;
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $pictureuser = $hashImage;
+                $pictureuser = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             $data['picture'] = $pictureuser;
@@ -251,7 +256,7 @@ class UsersController extends Controller
 //                'roles' => 'required'
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -260,12 +265,9 @@ class UsersController extends Controller
 
 			$user = User::findOrFail($ids[0]);
 
-            $pictureuser = null;
+            $pictureuser = $user->picture;
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $pictureuser = $hashImage;
+                $pictureuser = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
 			if ($request->input('password') == '' || $request->input('password') == null) {

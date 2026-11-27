@@ -69,8 +69,16 @@ class GalleryController extends Controller
 				</div>';
                 return $check;
             })
-            ->addColumn('active', function ($gallery) {
-                return $gallery->active == 'Y' ? 'Active' : 'Non Active';
+            ->addColumn('active', function ($item) {
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('gallerys.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('gallerys.active', 'Y');
+                }
             })
             ->addColumn('action', function ($gallery) {
                 $btn = '<div style="text-align:center;">';
@@ -118,7 +126,7 @@ class GalleryController extends Controller
                 'album_id' => 'required',
                 'title' => 'required',
                 'seotitle' => 'required',
-                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480'
             ]);
             $request->request->add([
                 'created_by' => Auth::User()->id,
@@ -126,10 +134,7 @@ class GalleryController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             Gallery::create($requestData);
@@ -200,7 +205,7 @@ class GalleryController extends Controller
 
             ];
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
             $this->validate($request, $rule);
             $request->request->add([
@@ -209,10 +214,7 @@ class GalleryController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                $image->storeAs('public/uploads', $hashImage);
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             $gallery = Gallery::findOrFail($ids[0]);

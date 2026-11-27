@@ -113,7 +113,7 @@ class SettingsController extends Controller
                     $request,
                     [
                         'key' => 'required|string|unique:settings',
-                        'value' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                        'value' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480'
                     ]
                 );
             } else {
@@ -134,13 +134,7 @@ class SettingsController extends Controller
 
             if ($requestData['key'] == 'favicon' || $requestData['key'] == 'logo') {
                 if ($request->hasFile('value')) {
-                    $image = $request->file('value');
-                    $hashImage = $image->hashName();
-                    Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                    if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                        @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                    }
-                    $requestData['value'] = $hashImage;
+                    $requestData['value'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('value'));
                 }
             }
 
@@ -217,7 +211,7 @@ class SettingsController extends Controller
                     $request,
                     [
                         'key' => 'required|string|unique:settings,key,' . $ids[0],
-                        'value' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                        'value' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480'
                     ]
                 );
             } else {
@@ -237,13 +231,7 @@ class SettingsController extends Controller
 
             if ($requestData['key'] == 'favicon' || $requestData['key'] == 'logo') {
                 if ($request->hasFile('value')) {
-                    $image = $request->file('value');
-                    $hashImage = $image->hashName();
-                    Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                    if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                        @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                    }
-                    $requestData['value'] = $hashImage;
+                    $requestData['value'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('value'));
                 }
             }
 

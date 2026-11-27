@@ -5,50 +5,30 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="{{ url('dashboard') }}">Dashboard</a>
-            <a class="breadcrumb-item" href="{{ url('dashboard/agenda') }}">Agenda</a>
-            <span class="breadcrumb-item active">View Agenda</span>
+            <a class="breadcrumb-item" href="{{ url('dashboard/agenda/table') }}">Agenda</a>
+            <span class="breadcrumb-item active">Preview Agenda</span>
         </nav>
     </div>
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
-            <div class="mg-b-40">
-                <div class="card-options">
-                    <a href="{{ url('dashboard/agenda/table') }}" class="btn btn-secondary btn-sm" title="Back"><i
-                            class="fa fa-reply"></i> Back</a>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <th> Title</th>
-                        <td> {{ $agenda->title }} </td>
-                    </tr>
-                    <tr>
-                        <th> Seotitle</th>
-                        <td> {{ $agenda->seotitle }} </td>
-                    </tr>
-                    <tr>
-                        <th> Start</th>
-                        <td> {{ date('d M Y H:i A', strtotime($agenda->start)) }} </td>
-                    </tr>
-                    <tr>
-                        <th> End</th>
-                        <td> {{ date('d M Y H:i A', strtotime($agenda->end)) }} </td>
-                    </tr>
-                    <tr>
-                        <th> Content</th>
-                        <td> {!! $agenda->content !!} </td>
-                    </tr>
-                    <tr>
-                        <th> Active</th>
-                        <td> {{ $agenda->active == 'Y' ? 'Active' : 'Non Active' }} </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            @include('backend.partials.preview_layout', [
+                'title' => $agenda->title,
+                'subtitle' => 'Slug: ' . $agenda->seotitle,
+                'active' => $agenda->active,
+                'badgeText' => $agenda->sumber_agenda ?: 'Agenda Kegiatan',
+                'backUrl' => url('dashboard/agenda/table'),
+                'editUrl' => url('dashboard/agenda/' . Hashids::encode($agenda->id) . '/edit'),
+                'fields' => [
+                    ['label' => 'Mulai', 'value' => date('d M Y H:i', strtotime($agenda->start)) . ' WIB', 'icon' => 'far fa-calendar'],
+                    ['label' => 'Selesai', 'value' => date('d M Y H:i', strtotime($agenda->end)) . ' WIB', 'icon' => 'far fa-clock'],
+                    ['label' => 'Lokasi', 'value' => $agenda->display_location, 'icon' => 'fas fa-map-marker-alt'],
+                    ['label' => 'Pakaian', 'value' => $agenda->pakaian],
+                    ['label' => 'Penyelenggara', 'value' => $agenda->penyelenggara, 'full' => true],
+                ],
+                'htmlContent' => $agenda->content,
+                'contentTitle' => 'Deskripsi & Rincian Agenda',
+            ])
         </div>
     </div>
 @endsection

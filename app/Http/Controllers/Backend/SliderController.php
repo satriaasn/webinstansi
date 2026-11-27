@@ -49,7 +49,7 @@ class SliderController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function anyData()
+    public function anyData(Request $request)
     {
         if (Auth::user()->hasRole('superadmin') || Auth::user()->hasRole('admin')) {
             $sliders = Slider::leftJoin('users', 'users.id', '=', 'sliders.created_by')
@@ -59,6 +59,11 @@ class SliderController extends Controller
                 ->where('sliders.created_by', '=', Auth::user()->id)
                 ->select('sliders.*', 'users.id as uid', 'users.name as uname');
         }
+
+        if ($request->filled('active') && in_array($request->get('active'), ['Y', 'N'])) {
+            $sliders->where('sliders.active', $request->get('active'));
+        }
+
         return Datatables::of($sliders)
             ->addColumn('check', function ($slider) {
                 $check = '<div style="text-align:center;">
@@ -68,7 +73,17 @@ class SliderController extends Controller
                 return $check;
             })
             ->addColumn('active', function ($slider) {
-                return $slider->active == 'Y' ? 'Active' : 'Non Active';
+                return $slider->active == 'Y'
+                    ? '<span class="badge badge-success">Active</span>'
+                    : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n') {
+                    $query->where('sliders.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y') {
+                    $query->where('sliders.active', 'Y');
+                }
             })
             ->addColumn('action', function ($slider) {
                 $btn = '<div style="text-align:center;">';
@@ -114,7 +129,7 @@ class SliderController extends Controller
             $rule = [
 //				'title' => 'required',
 //				'seotitle' => 'required',
-                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480'
             ];
             $this->validate($request, $rule);
             $request->request->add([
@@ -123,13 +138,7 @@ class SliderController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                }
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             Slider::create($requestData);
@@ -197,7 +206,7 @@ class SliderController extends Controller
             $rule = [];
 
             if ($request->hasFile('picture')) {
-                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+                $rule['picture'] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:20480';
             }
 
             $this->validate($request, $rule);
@@ -206,13 +215,7 @@ class SliderController extends Controller
             ]);
             $requestData = $request->all();
             if ($request->hasFile('picture')) {
-                $image = $request->file('picture');
-                $hashImage = $image->hashName();
-                Storage::disk('public')->putFileAs('uploads', $image, $hashImage);
-                if (file_exists(storage_path('app/public/uploads/' . $hashImage))) {
-                    @copy(storage_path('app/public/uploads/' . $hashImage), public_path('berkas/' . $hashImage));
-                }
-                $requestData['picture'] = $hashImage;
+                $requestData['picture'] = app(\App\Services\ImageCompressionService::class)->uploadAndCompress($request->file('picture'));
             }
 
             $slider = Slider::findOrFail($ids[0]);

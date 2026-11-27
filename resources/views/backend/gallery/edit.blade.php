@@ -37,9 +37,8 @@
                 {!! Form::label('album_id', 'Album', ['class' => 'col-md-12 control-label required']) !!}
                 <div class="col-md-12">
                     <select class="form-control select2" name="album_id" required>
-                        <option value="{{ $gallery->album_id }}">Selected {{ $gallery->album->title }}</option>
                         @foreach($albums as $album)
-                            <option value="{{ $album->id }}">{{ $album->title }}</option>
+                            <option value="{{ $album->id }}" {{ $gallery->album_id == $album->id ? 'selected' : '' }}>{{ $album->title }}</option>
                         @endforeach
                     </select>
                     {!! $errors->first('album_id', '<p class="help-block text-danger">:message</p>') !!}
@@ -61,6 +60,9 @@
             </div>
             <div class="row form-group {{ $errors->has('picture') ? 'has-error' : ''}}">
                 {!! Form::label('picture', 'Picture', ['class' => 'col-md-12 control-label']) !!}
+                <div class="col-md-12 mb-2">
+                    @include('backend.partials.image_preview', ['file' => $gallery->picture, 'alt' => $gallery->title, 'maxHeight' => '180px'])
+                </div>
                 <div class="col-md-12">
                     <input type="file" name="picture" id="picture" accept="image/*">
                 </div>
@@ -71,10 +73,8 @@
                     {!! Form::label('active', 'Active', ['class' => 'col-md-12 control-label']) !!}
                     <div class="col-md-12">
                         <select class="form-control select2" name="active" required>
-                            <option value="{{ $gallery->active }}">
-                                Selected {{ $gallery->active == 'Y' ? 'Active' : 'Non Active' }}</option>
-                            <option value="Y">Active</option>
-                            <option value="N">Non Active</option>
+                            <option value="Y" {{ $gallery->active == 'Y' ? 'selected' : '' }}>Active</option>
+                            <option value="N" {{ $gallery->active == 'N' ? 'selected' : '' }}>Non Active</option>
                         </select>
                         {!! $errors->first('active', '<p class="help-block text-danger">:message</p>') !!}
                     </div>

@@ -76,7 +76,7 @@
                 },
                 ajax: '{{ url("dashboard/keberatan-informasi/data") }}',
                 autoWidth: false,
-                order: [[0, 'desc']],
+                order: [[1, 'asc']],
                 columnDefs: [{
                     targets: 'no-sort',
                     orderable: false

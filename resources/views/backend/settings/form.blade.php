@@ -8,6 +8,9 @@
     <br/>
     @if(isset($setting))
         @if ($setting->key == 'favicon' || $setting->key == 'logo')
+            <div class="mb-2">
+                @include('backend.partials.image_preview', ['file' => $setting->value, 'alt' => $setting->key, 'maxHeight' => '140px'])
+            </div>
             <input type="file" name="value" id="value" accept="image/*">
         @else
             {!! Form::text('value', null, ('required' == 'required') ? ['class' => 'form-control', 'required' => 'required'] : ['class' => 'form-control']) !!}

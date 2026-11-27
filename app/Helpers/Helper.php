@@ -36,13 +36,18 @@ if (!function_exists('getSetting')) {
 if (!function_exists('getTheme')) {
     function getTheme($files)
     {
-        $result = Theme::where('active', 'Y')->first();
-        if ($result) {
-            return $result->folder . '.' . $files;
-        } else {
-            $result2 = Theme::where('id', '1')->first();
-            return $result2->folder . '.' . $files;
+        static $folder = null;
+        if ($folder === null) {
+            $folder = \Illuminate\Support\Facades\Cache::remember('active_theme_folder', 3600, function () {
+                $result = Theme::where('active', 'Y')->first();
+                if ($result) {
+                    return $result->folder;
+                }
+                $result2 = Theme::where('id', '1')->first();
+                return $result2 ? $result2->folder : 'theme-2024limitless';
+            });
         }
+        return $folder . '.' . $files;
     }
 }
 if (!function_exists('activeMenu')) {
@@ -163,6 +168,16 @@ if (!function_exists('berkas')) {
             return $fileName;
         }
 
+        static $resolved = [];
+        if (array_key_exists($fileName, $resolved)) {
+            return $resolved[$fileName];
+        }
+
+        $cacheKey = 'berkas_url_' . md5($fileName);
+        if (\Illuminate\Support\Facades\Cache::has($cacheKey)) {
+            return $resolved[$fileName] = \Illuminate\Support\Facades\Cache::get($cacheKey);
+        }
+
         $clean = ltrim($fileName, '/');
 
         $candidates = [
@@ -174,15 +189,15 @@ if (!function_exists('berkas')) {
         ];
 
         foreach ($candidates as $rel) {
-            if (Storage::disk('public')->exists($rel)) {
-                return url('berkas/' . $rel);
-            }
-            if (file_exists(public_path('berkas/' . $rel))) {
-                return url('berkas/' . $rel);
+            if (file_exists(public_path('berkas/' . $rel)) || Storage::disk('public')->exists($rel)) {
+                $url = url('berkas/' . $rel);
+                \Illuminate\Support\Facades\Cache::put($cacheKey, $url, 3600);
+                return $resolved[$fileName] = $url;
             }
         }
 
-        return null;
+        \Illuminate\Support\Facades\Cache::put($cacheKey, null, 600);
+        return $resolved[$fileName] = null;
     }
 }
 if (!function_exists('berkasLogo')) {

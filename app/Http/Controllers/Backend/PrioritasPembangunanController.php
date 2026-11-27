@@ -52,7 +52,15 @@ class PrioritasPembangunanController extends Controller
                 </div>';
             })
             ->addColumn('active', function ($item) {
-                return $item->active == 'Y' ? 'Active' : 'Non Active';
+                return $item->active == 'Y' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Non Active</span>';
+            })
+            ->filterColumn('active', function ($query, $keyword) {
+                $kw = strtolower(trim($keyword));
+                if (str_contains($kw, 'non') || str_contains($kw, 'tidak') || $kw === 'n' || $kw === '0') {
+                    $query->where('prioritas_pembangunans.active', 'N');
+                } elseif (str_contains($kw, 'act') || str_contains($kw, 'akt') || $kw === 'y' || $kw === '1') {
+                    $query->where('prioritas_pembangunans.active', 'Y');
+                }
             })
             ->addColumn('action', function ($item) {
                 $hashId = Hashids::encode($item->id);

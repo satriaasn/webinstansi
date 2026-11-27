@@ -67,7 +67,7 @@
                 },
                 ajax: '{{ url("dashboard/wisata/data") }}',
                 autoWidth: false,
-                order: [[1, 'desc']],
+                order: [[1, 'asc']],
                 columnDefs: [{
                     targets: 'no-sort',
                     orderable: false

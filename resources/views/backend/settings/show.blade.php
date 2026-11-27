@@ -5,38 +5,29 @@
     <div class="br-pageheader">
         <nav class="breadcrumb pd-0 mg-0 tx-12">
             <a class="breadcrumb-item" href="{{ url('dashboard') }}">Dashboard</a>
-            <a class="breadcrumb-item" href="{{ url('dashboard/settings') }}">Settings</a>
-            <span class="breadcrumb-item active">View Settings</span>
+            <a class="breadcrumb-item" href="{{ url('dashboard/settings/table') }}">Settings</a>
+            <span class="breadcrumb-item active">Preview Settings</span>
         </nav>
     </div>
 
     <div class="br-pagebody">
         <div class="br-section-wrapper">
-            <div class="mg-b-40">
-                <div class="card-options">
-                    <a href="{{ url('dashboard/settings/table') }}" class="btn btn-secondary btn-sm" title="Back"><i
-                            class="fa fa-reply"></i> Back</a>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <th>Key</th>
-                        <td>{{ $setting->key }}</td>
-                    </tr>
-                    <tr>
-                        <th>Value</th>
-                        <td>{{ $setting->value }}</td>
-                    </tr>
-                    <tr>
-                        <th>Usage</th>
-                        <td><code>setting('{{ $setting->key }}')</code></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            @php
+                $isMediaSetting = in_array($setting->key, ['logo', 'favicon']);
+            @endphp
+            @include('backend.partials.preview_layout', [
+                'title' => strtoupper(str_replace('_', ' ', $setting->key)),
+                'subtitle' => "Helper: getSetting('{$setting->key}')",
+                'badgeText' => 'Pengaturan Sistem',
+                'backUrl' => url('dashboard/settings/table'),
+                'editUrl' => url('dashboard/settings/' . Hashids::encode($setting->id) . '/edit'),
+                'image' => $isMediaSetting ? $setting->value : null,
+                'fields' => [
+                    ['label' => 'Key', 'value' => $setting->key, 'code' => true],
+                    ['label' => 'Value', 'value' => $setting->value, 'full' => !$isMediaSetting],
+                    ['label' => 'Usage', 'value' => "setting('{$setting->key}')", 'code' => true],
+                ],
+            ])
         </div>
     </div>
 @endsection
