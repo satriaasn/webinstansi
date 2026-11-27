@@ -60,6 +60,7 @@ Route::middleware(['log.visitor'])->group(function () {
     Route::get('detail-gallery/{seotitle}', 'GalleryController@detail');
     Route::get('video/all', 'VideoController@index');
     Route::get('pegawai/all', 'PegawaiController@index');
+    Route::get('struktur-organisasi', 'StrukturOrganisasiController@index')->name('struktur-organisasi.index');
     // Route::get('event', 'EventController@index');
     // Route::get('detail-event/{event_seo}', 'EventController@detail');
     // Route::get('event/search','EventController@search');
@@ -291,6 +292,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('dashboard/pegawai/data','Backend\PegawaiController@anyData');
 	Route::post('dashboard/pegawai/deleteall','Backend\PegawaiController@deleteAll');
 	Route::resource('dashboard/pegawai','Backend\PegawaiController');
+
+	Route::get('dashboard/struktur-organisasi/index','Backend\StrukturOrganisasiController@index');
+	Route::get('dashboard/struktur-organisasi/table','Backend\StrukturOrganisasiController@index');
+	Route::get('dashboard/struktur-organisasi/data','Backend\StrukturOrganisasiController@anyData');
+	Route::post('dashboard/struktur-organisasi/deleteall','Backend\StrukturOrganisasiController@deleteAll');
+	Route::resource('dashboard/struktur-organisasi','Backend\StrukturOrganisasiController');
 
 	// FERI - Legacy Event module disabled (Controller not in codebase)
     // Route::get('dashboard/event/index','Backend\\EventController@getIndex');

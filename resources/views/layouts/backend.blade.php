@@ -1564,7 +1564,7 @@
             </div>
 
             <!-- 7. Pengaturan Konten -->
-            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/prioritas*') || Request::is('dashboard/statistik-makro*') || Request::is('dashboard/flyer*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/contact*'); @endphp
+            @php $isContentActive = Request::is('dashboard/slider*') || Request::is('dashboard/prioritas*') || Request::is('dashboard/statistik-makro*') || Request::is('dashboard/flyer*') || Request::is('dashboard/pegawai*') || Request::is('dashboard/struktur-organisasi*') || Request::is('dashboard/contact*'); @endphp
             <div class="menu-dropdown">
                 <button type="button" class="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl transition duration-150 menu-toggle {{ $isContentActive ? 'text-white font-bold bg-white/10' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                     <div class="flex items-center gap-3">
@@ -1579,6 +1579,7 @@
                     <a href="{{ url('/dashboard/statistik-makro') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/statistik-makro*') ? 'text-white font-bold bg-white/10' : '' }}">Statistik Indikator Makro</a>
                     <a href="{{ url('/dashboard/flyer/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/flyer*') ? 'text-white font-bold bg-white/10' : '' }}">Flyer & Ucapan</a>
                     <a href="{{ url('/dashboard/pegawai/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/pegawai*') ? 'text-white font-bold bg-white/10' : '' }}">Data Pejabat & Pegawai</a>
+                    <a href="{{ url('/dashboard/struktur-organisasi/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/struktur-organisasi*') ? 'text-white font-bold bg-white/10' : '' }}">Struktur Organisasi</a>
                     <a href="{{ url('/dashboard/contact/table') }}" class="block py-1.5 px-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 {{ Request::is('dashboard/contact*') ? 'text-white font-bold bg-white/10' : '' }}">Pesan Masuk (Kontak)</a>
                 </div>
             </div>
