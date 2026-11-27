@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schema;
 class CompressExistingImagesCommand extends Command
 {
     protected $signature = 'images:compress-webp
+                            {--months=3 : Hanya proses gambar dalam N bulan terakhir (0 = semua file)}
                             {--quality=82 : Kualitas kompresi WebP (1-100)}
                             {--max-width=1920 : Lebar maksimal gambar dalam pixel}
                             {--keep-originals : Jangan hapus file gambar lama setelah dikonversi}
@@ -38,10 +39,12 @@ class CompressExistingImagesCommand extends Command
 
     public function handle(ImageCompressionService $compressor): int
     {
+        $months = max(0, (int) $this->option('months'));
         $quality = max(10, min(100, (int) $this->option('quality')));
         $maxWidth = max(200, (int) $this->option('max-width'));
         $keepOriginals = (bool) $this->option('keep-originals');
         $dryRun = (bool) $this->option('dry-run');
+        $cutoffTimestamp = $months > 0 ? now()->subMonths($months)->timestamp : null;
 
         $directories = array_filter([
             storage_path('app/public/uploads'),
@@ -54,12 +57,16 @@ class CompressExistingImagesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info(($dryRun ? '[DRY-RUN] ' : '') . "Memulai kompresi gambar ke WebP (quality={$quality}, maxWidth={$maxWidth}px)...");
+        $scopeText = $months > 0
+            ? "{$months} bulan terakhir (sejak " . date('Y-m-d', $cutoffTimestamp) . ")"
+            : 'semua waktu';
+        $this->info(($dryRun ? '[DRY-RUN] ' : '') . "Memulai kompresi gambar ke WebP ({$scopeText}, quality={$quality}, maxWidth={$maxWidth}px)...");
 
         $convertedMap = []; // oldFilename => newWebpFilename
         $totalOriginalBytes = 0;
         $totalWebpBytes = 0;
         $convertedCount = 0;
+        $skippedOldCount = 0;
         $errorCount = 0;
 
         foreach ($directories as $dir) {
@@ -90,6 +97,14 @@ class CompressExistingImagesCommand extends Command
                 if ($origSize === 0) {
                     $this->line("  [SKIP] {$file} (file kosong 0 bytes)");
                     continue;
+                }
+
+                if ($cutoffTimestamp !== null) {
+                    $mtime = @filemtime($fullPath);
+                    if ($mtime !== false && $mtime < $cutoffTimestamp) {
+                        $skippedOldCount++;
+                        continue;
+                    }
                 }
 
                 if ($dryRun) {
@@ -186,6 +201,9 @@ class CompressExistingImagesCommand extends Command
         $this->newLine();
         $this->info('Selesai!');
         $this->line("- Gambar diproses  : {$convertedCount}");
+        if ($skippedOldCount > 0) {
+            $this->line("- Dilewati (>{$months} bln): {$skippedOldCount} file");
+        }
         $this->line("- Referensi DB     : {$dbUpdated} baris diperbarui");
         if (!$dryRun && $totalOriginalBytes > 0) {
             $savedMB = round(($totalOriginalBytes - $totalWebpBytes) / 1048576, 2);

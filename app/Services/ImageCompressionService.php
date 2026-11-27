@@ -99,6 +99,7 @@ class ImageCompressionService
             @mkdir($targetDir, 0755, true);
         }
 
+        @ini_set('memory_limit', '256M');
         $image = $this->manager->read($sourcePath);
         if ($image->width() > $maxWidth) {
             $image->scaleDown(width: $maxWidth);
